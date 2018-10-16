@@ -1,6 +1,6 @@
 require 'rugged'
 
-module GitOps
+module GitFlow
   module GitMethods
   
     def self._sync_branches(repo)

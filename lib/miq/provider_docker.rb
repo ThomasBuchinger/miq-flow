@@ -1,4 +1,4 @@
-module GitOps
+module GitFlow
   module MiqProvider
     class Docker
 

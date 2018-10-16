@@ -1,4 +1,4 @@
-module GitOps
+module GitFlow
   def self.deploy(core)
       
 

@@ -1,10 +1,10 @@
 require_relative 'git/mixin_git.rb'
 require_relative 'miq/mixin_miq.rb'
 
-module GitOps
+module GitFlow
   class Core
-    include GitOps::GitMethods
-    include GitOps::MiqMethods
+    include GitFlow::GitMethods
+    include GitFlow::MiqMethods
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
@@ -14,7 +14,7 @@ module GitOps
       @remote_name  = opts.fetch(:remote_name, 'origin')
       @master       = opts.fetch(:master, 'master')
       @prefixes     = opts.fetch(:prefix, ['feature', 'fix'] )
-      @miq_provider = opts.fetch(:provider, GitOps::MiqProvider::Docker.new )
+      @miq_provider = opts.fetch(:provider, GitFlow::MiqProvider::Docker.new )
       @automate_dir = opts.fetch(:automate_dir, 'automate' )
     end
 

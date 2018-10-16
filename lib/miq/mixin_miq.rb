@@ -1,6 +1,6 @@
 require 'tmpdir'
 require 'yaml'
-module GitOps
+module GitFlow
   module MiqMethods
     def prepare_import(method, paths)
       self.send("prepare_import_#{method}".to_sym, paths)
