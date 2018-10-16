@@ -39,7 +39,7 @@ module GitFlow
       domain['object']['attributes']['name']         = feature_name
       domain['object']['attributes']['description']  = "Development Branch for #{feature_name}"
       domain['object']['attributes']['display_name'] = nil
-      domain['object']['attributes']['priority']     = 10
+      domain['object']['attributes']['priority']     = @miq_priority
       domain['object']['attributes']['enabled']      = true
       domain['object']['attributes']['tenant_id']    = 1 
       domain['object']['attributes']['source']       = 'user'
