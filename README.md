@@ -1,4 +1,4 @@
-# ManageIQ Automate GitOps Importer
+# ManageIQ Automate GitFlow Importer
 This command line utiity extends the default ManageIQ Automate Import/Export Scripts to work better in a git-based branching workflow (GitFlow).
 
 # The Problem
