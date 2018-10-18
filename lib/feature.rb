@@ -14,9 +14,10 @@ module GitFlow
       @remote_name   = opts.fetch(:remote_name, 'origin')
       @master        = opts.fetch(:master, 'master')
       @prefixes      = opts.fetch(:prefix, ['feature', 'fix'] )
-      @miq_provider  = opts.fetch(:provider, GitFlow::MiqProvider::Docker.new )
+      @miq_provider  = opts.fetch(:provider, GitFlow::MiqProvider::Noop.new )
       @automate_dir  = opts.fetch(:automate_dir, 'automate' )
       @miq_prioritiy = opts.fetch(:miq_priority, 'automate' )
+      @miq_fs_domain = opts.fetch(:miq_fs_domain, nil )
     end
 
     def _create_git(branch_name, repo)
@@ -29,13 +30,14 @@ module GitFlow
     end
 
     def _create_miq(domain_name)
-      @miq_domain = domain_name
+      @miq_domain    = domain_name
+      @miq_fs_domain = @miq_fs_domain || domain_name
       @miq_import_method = :dirty
     end
     
-    def initialize(branch_name, opts)
+    def initialize(branch_name, opts) 
       miq_domain = opts.fetch(:miq_domain, branch_name.split(/-/)[2]) || branch_name
-      @git_repo   = opts.fetch(:git_repo, nil) || $git_repo
+      @git_repo  = opts.fetch(:git_repo, nil) || $git_repo
       _set_defaults(opts)
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{miq_domain}")
 
@@ -49,7 +51,7 @@ module GitFlow
       $logger.debug("Deploying: #{@miq_domain}") 
 
       tmpdir = prepare_import(@miq_import_method, @miq_domain)
-      @miq_provider.import(tmpdir, @miq_domain)
+      @miq_provider.import(tmpdir, @miq_fs_domain, @miq_domain)
       cleanup_import(@miq_import_method)
       
     end

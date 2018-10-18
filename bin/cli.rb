@@ -17,19 +17,27 @@ module GitFlow
     option :provider
     def deploy(name)
       miq_domain   = options[:domain] || (name.split(/-/) || [])[2] || name
-      provider     = nil
       provider     = GitFlow::MiqProvider::Appliance.new() if options[:provider] == 'local'
-      provider     = provider ||  GitFlow::MiqProvider::Docker.new()
+      provider     = GitFlow::MiqProvider::Docker.new() if options[:provider] == 'docker'
 
       feature_opts = {:miq_domain=>miq_domain, :provider=>provider}
       feature_opts[:miq_priority] = options[:priority] unless options[:priority].nil?
-      feature = GitFlow::Feature.new(name, feature_opts)
+      feature_opts[:provider] = provider unless provider.nil?
+      feature = GitFlow::Feature.new(name, $default_opts.merge(feature_opts))
       feature.deploy()
     end
 
-    desc 'devel1', 'Development command' 
+    desc 'devel1', 'Development NOOP command' 
     def devel1()
-      f1 = GitFlow::Feature.new('feature-1-f1', miq_domain: 'buc')
+      feature_opts = { :miq_fs_domain=>'buc', :miq_domain=>'f1' }
+      f1 = GitFlow::Feature.new('feature-1-f1', feature_opts)
+      f1.deploy()
+    end
+    desc 'devel2', 'Development ACTIVE command ' 
+    def devel2()
+      feature_opts = { :miq_fs_domain=>'buc', :miq_domain=>'f1' }
+      feature_opts[:provider] = GitFlow::MiqProvider::Docker.new()
+      f1 = GitFlow::Feature.new('feature-1-f1', feature_opts)
       f1.deploy()
     end
 

@@ -37,14 +37,14 @@ module GitFlow
     def _dirty_import_fake_domain(tmpdir, feature_name)
       domain = {'object_type'=>'domain', 'version'=>1.0, 'object'=>{'attributes'=>{}}}
       domain['object']['attributes']['name']         = feature_name
-      domain['object']['attributes']['description']  = "Development Branch for #{feature_name}"
+      domain['object']['attributes']['description']  = "Development Branch for feature #{feature_name}: #{@git_branch.name}"
       domain['object']['attributes']['display_name'] = nil
       domain['object']['attributes']['priority']     = @miq_priority
       domain['object']['attributes']['enabled']      = true
       domain['object']['attributes']['tenant_id']    = 1 
       domain['object']['attributes']['source']       = 'user'
       domain['object']['attributes']['top_level_namespace'] = nil 
-      filename = File.join(tmpdir, @automate_dir, feature_name, '__domain__.yaml')
+      filename = File.join(tmpdir, @automate_dir, @miq_fs_domain, '__domain__.yaml')
       $logger.debug("Creating Fake domain at #{filename}")
 
       FileUtils.mkdir_p(File.dirname(filename))
