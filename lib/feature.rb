@@ -21,9 +21,10 @@ module GitFlow
     end
 
     def _create_git(branch_name, repo)
-
-      @git_master = repo.branches[@master]
+      master_branch = repo.branches[@master]
       @git_branch = repo.branches["#{@remote_name}/#{branch_name}"]
+      
+      @git_master = repo.merge_base(@git_branch, master_branch)
 
       raise "Unable to find base branch: #{@master}"        if @git_master.nil?()
       raise "Unable to find feature branch: #{branch_name}" if @git_branch.nil?()
