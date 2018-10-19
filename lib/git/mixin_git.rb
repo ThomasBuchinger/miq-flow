@@ -26,7 +26,8 @@ module GitFlow
 
       paths = []
       diff = base.target.diff(branch.target)
-      diff.each_delta do |delta| 
+      diff.each_delta do |delta|
+        next if delta.deleted?()
         paths << delta.new_file[:path]
       end
       paths
