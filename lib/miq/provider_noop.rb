@@ -1,5 +1,8 @@
 module GitFlow
+  # MiqProvider implement the actual communication to ManageIQ
+  # This depends the choosen deployment scenario for ManageIQ (e.g. Appliance)
   module MiqProvider
+    # This provider does nothing, but it is useful for testing 
     class Noop
 
 

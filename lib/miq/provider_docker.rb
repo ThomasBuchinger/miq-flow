@@ -1,5 +1,8 @@
 module GitFlow
   module MiqProvider
+    # This Provider uses 'docker exec' to communicate to ManageIQ
+    # This Provider assumes, that a manageiq/manageiq continer is running on the local docker host and the container is named 'mangeiq'.
+    # It is mostly used for development
     class Docker
 
       attr_accessor :container_name

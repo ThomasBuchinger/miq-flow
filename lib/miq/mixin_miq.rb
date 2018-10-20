@@ -1,6 +1,8 @@
 require 'tmpdir'
 require 'yaml'
 module GitFlow
+  # This module contains everything needed to prepare an Automate domain for import
+  # Mostly file handling at this point
   module MiqMethods
     def prepare_import(method, paths)
       self.send("prepare_import_#{method}".to_sym, paths)

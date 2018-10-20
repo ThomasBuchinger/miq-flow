@@ -1,5 +1,6 @@
 module GitFlow
   module MiqProvider
+    # This provider assumes to be running on a ManageIQ Appliance
     class Appliance
 
       attr_accessor :container_name
