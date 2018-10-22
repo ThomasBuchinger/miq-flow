@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'thor'
-require_relative '../runner.rb' # This is a temporary solution only
-require_relative '../custom.rb' # This is a temporary solution only
+require_relative '../lib/bootstrap.rb'
 
 module GitFlow
   class Cli < Thor
@@ -44,4 +43,6 @@ module GitFlow
 
   end
 end
+GitFlow.init()
 GitFlow::Cli.start()
+GitFlow.tear_down()

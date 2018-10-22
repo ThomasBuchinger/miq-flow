@@ -61,8 +61,8 @@ module GitFlow
       @git_repo.checkout(@git_branch)
       $logger.debug("Deploying: #{@miq_domain}") 
 
-      tmpdir = prepare_import(@miq_import_method, @miq_domain)
-      @miq_provider.import(tmpdir, @miq_fs_domain, @miq_domain)
+      import_dir = prepare_import(@miq_import_method, @miq_domain)
+      @miq_provider.import(import_dir, @miq_fs_domain, @miq_domain)
       cleanup_import(@miq_import_method)
       
     end
