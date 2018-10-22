@@ -1,7 +1,8 @@
 # ManageIQ Automate GitFlow Importer
-This command line utiity extends the default ManageIQ Automate Import/Export Scripts to work better in a git-based branching workflow (GitFlow).
+This command line utility implements a git-based branching workflow (GitFlow) on top of the default ManageIQ Automate Import/Export Scripts.
 
 # The Problem
+ManageIQ provides a workflow enginge (Automate Engine) 
 ManageIQ does provide import/export scripts for Automate domains, however the default scripts are not compatible with GitFlow for the following reasons:
 * The Importer cannot handle partial imports for Automate domains
 * Since higher priority domains shadow lower priority ones, any domain modeling a feature-branch MUST only contain changed files (which is a concept not easily translateable into git).
@@ -13,17 +14,21 @@ automate-gitflow uses the diff information in git to create partial domains, whi
 * Pull-Requests and Commit-Squashing work the way you expect them to work
 
 # How do I use it?
-DISCLAIMER: 
-* This is a first commit, and there is still stuff hardcoded.
-* The only Provider is a local Docker Container (at the moment)
+DISCLAIMER: This is work-in-progress, expect things to change without warning and the occasional stack trace.
+* Pull the repository
+* Create a file called 'custom.rb' in the repository root
+  * Define a global variable $git_path to use a local git repository
+  * Define a global variable $git_url to clone the repository. Credentials and other parameters can be defined in $default_opts[:git_opts], see [Rugged Documentation](https://www.rubydoc.info/github/libgit2/rugged/Rugged/Repository#clone_at-class_method) for details.
+* Run ./bin/cli.rb 
 
-## Commands (there is no CLI yet)
-* discover - create new domains
-* deploy <branch> - deploys the code in one
-* sync  - deploy all branches 
-* prune - remove feature-domains without a branch
+## Commands
+See ./bin/cli.rb help for details. Basic Commands are: 
+* (WIP) discover - create new domains
+* deploy <branch> - deploys the code in a feature-branch
+* (WIP) sync  - deploy all branches 
+* (WIP) prune - remove feature-domains without a branch
 
 ## Notes
-* Make sure you have [Rugged](https://github.com/libgit2/rugged) (it is on the ManageIQ Appliances)
-* You have to checkout the Automate Code Repository yourself
-* automate-gitflow will not modify any files in the repository, however it will do checkouts
+* Make sure you have [Rugged](https://github.com/libgit2/rugged) and [Thor](https://github.com/erikhuda/thor) installed (it is on the ManageIQ Appliances)
+* automate-gitflow may checkout a different branch, when used with a local repository
+* deploying multiple domains per feature-branch is not yet supported
