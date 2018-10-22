@@ -17,12 +17,12 @@ automate-gitflow uses the diff information in git to create partial domains, whi
 DISCLAIMER: This is work-in-progress, expect things to change without warning and the occasional stack trace.
 * Pull the repository
 * Create a file called 'custom.rb' in the repository root
-  * Define a global variable $git_path to use a local git repository
-  * Define a global variable $git_url to clone the repository. Credentials and other parameters can be defined in $default_opts[:git_opts], see [Rugged Documentation](https://www.rubydoc.info/github/libgit2/rugged/Rugged/Repository#clone_at-class_method) for details.
-* Run ./bin/cli.rb 
+  * Define a global variable `$git_path` to use a local git repository
+  * Define a global variable `$git_url` to clone the repository. Credentials and other parameters can be defined in `$default_opts[:git_opts]`, see [Rugged Documentation](https://www.rubydoc.info/github/libgit2/rugged/Rugged/Repository#clone_at-class_method) for details.
+* Run `./bin/cli.rb` 
 
 ## Commands
-See ./bin/cli.rb help for details. Basic Commands are: 
+See `./bin/cli.rb` help for details. Basic Commands are: 
 * (WIP) discover - create new domains
 * deploy <branch> - deploys the code in a feature-branch
 * (WIP) sync  - deploy all branches 
