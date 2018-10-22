@@ -12,12 +12,22 @@ module GitFlow
     # @param [String] branch_name The branch-name as string
     # @param [Rugged::Repository] repo
     def _create_git(branch_name, repo)
-      rbranch = "#{@remote_name}/#{branch_name}"
-      @git_base   = merge_base(repo, rbranch)
-      @git_branch = repo.branches[rbranch]
-
-      raise "Unable to find base branch: #{@base}"        if @git_base.nil?()
+      @git_branch = create_local_branch(branch_name, repo)
       raise "Unable to find feature branch: #{branch_name}" if @git_branch.nil?()
+      @git_base   = merge_base(repo, branch_name)
+      raise "Unable to find base branch: #{@base}"        if @git_base.nil?()
+    end
+
+    # Creates a local branch tracking upstream if it does not already exist
+    # @param [String] branch_name feature-branch name
+    # @param [Rugged::Repository] repo 
+    def create_local_branch(branch_name, repo)
+      local_branch  = repo.branches[branch_name]
+      return local_branch unless local_branch.nil?
+      
+      $logger.debug("Creating local branch: #{branch_name}")
+      rbranch = "#{@remote_name}/#{branch_name}"
+      repo.create_branch(branch_name, rbranch)
     end
 
     # Find the merge_base commit
@@ -57,20 +67,6 @@ module GitFlow
       end
       paths
     end
-
-#    def self._sync_branches(repo)
-#      remotes = repo.branches.each(:remote).select{|remote_branch| @@prefixes.any?{|prefix| remote_branch.name.match("#{@@remote_name}/#{prefix}")  } }
-#      $logger.debug("_sync_branches: Found Remotes #{remotes.map{|r| r.name}}")
-#      locals = repo.branches.each_name(:local).sort
-#
-#      branch_diff = remotes.map do |r|
-#        next nil if locals.any?{|local_branch_name| r.name == local_branch_name  }
-#
-#        $logger.debug("Creating Branch: #{r.name}")
-#        
-#      end
-#      branch_diff.compact()
-#    end
 
   end
 end

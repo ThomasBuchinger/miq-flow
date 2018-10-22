@@ -48,7 +48,7 @@ module GitFlow
     raise "Failed to clone repository at #{$git_url}" if $git_repo.nil?
   end
   def self.local_repo(opts)
-    $logger.info("Using git Repository: #{$git_url}")
+    $logger.info("Using git Repository: #{$git_path}")
     $git_repo = Rugged::Repository.discover($git_path, opts.fetch(:accross_fs, true))
     raise "Failed to clone repository at #{$git_path}" if $git_repo.nil?
   end

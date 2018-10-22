@@ -23,7 +23,7 @@ module GitFlow
       feature_opts = {:miq_domain=>miq_domain, :provider=>provider}
       feature_opts[:miq_priority] = options[:priority] unless options[:priority].nil?
       feature_opts[:provider] = provider unless provider.nil?
-      feature = GitFlow::Feature.new(name, $default_opts.merge(feature_opts))
+      feature = GitFlow::Feature.new(name, $default_opts[:feature_defaults].merge(feature_opts))
       feature.deploy()
     end
 
