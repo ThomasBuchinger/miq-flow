@@ -26,7 +26,7 @@ module GitFlow
       @remote_name   = opts.fetch(:remote_name,   'origin')
       @base          = opts.fetch(:base,          'master')
       @prefixes      = opts.fetch(:prefix,        ['feature', 'fix'] )
-      @miq_provider  = opts.fetch(:provider,      GitFlow::MiqProvider::Noop.new )
+      @miq_provider  = opts.fetch(:provider,      nil )
       @automate_dir  = opts.fetch(:automate_dir,  'automate' )
       @miq_prioritiy = opts.fetch(:miq_priority,  10 )
       @miq_fs_domain = opts.fetch(:miq_fs_domain, nil )
@@ -37,6 +37,7 @@ module GitFlow
       @miq_domain    = domain_name
       @miq_fs_domain = @miq_fs_domain || domain_name
       @miq_import_method = :dirty
+      @miq_provider  = @miq_provider || GitFlow::MiqProvider::Noop.new
     end
     
     # Represents a feature-branch

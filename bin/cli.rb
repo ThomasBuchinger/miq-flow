@@ -18,7 +18,8 @@ module GitFlow
     def deploy(name)
       miq_domain   = options[:domain] || (name.split(/-/) || [])[2] || name
       provider     = GitFlow::MiqProvider::Appliance.new() if options[:provider] == 'local'
-      provider     = GitFlow::MiqProvider::Docker.new() if options[:provider] == 'docker'
+      provider     = GitFlow::MiqProvider::Docker.new()    if options[:provider] == 'docker'
+      provider     = GitFlow::MiqProvider::Noop.new()      if options[:provider] == 'noop'
 
       feature_opts = {:miq_domain=>miq_domain, :provider=>provider}
       feature_opts[:miq_priority] = options[:priority] unless options[:priority].nil?
