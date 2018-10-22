@@ -8,7 +8,7 @@ require 'miq/provider_docker.rb'
 require 'miq/provider_local.rb'
 require 'miq/provider_noop.rb'
 
-$default_opts = {}
+$default_opts = { :clear_tmp => true }
 $default_opts[:feature_defaults] = {:miq_fs_domain=>'foo', :miq_provider=>GitFlow::MiqProvider::Noop.new()}
 $default_opts[:git_opts] = {}
 

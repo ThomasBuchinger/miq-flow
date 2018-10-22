@@ -45,4 +45,4 @@ module GitFlow
 end
 GitFlow.init()
 GitFlow::Cli.start()
-GitFlow.tear_down()
+GitFlow.tear_down() if $default_opts[:clear_tmp]
