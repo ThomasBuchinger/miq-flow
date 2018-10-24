@@ -11,9 +11,10 @@ require 'miq/provider_noop.rb'
 $default_opts = { :clear_tmp => true }
 $default_opts[:feature_defaults] = {:miq_fs_domain=>'foo', :miq_provider=>GitFlow::MiqProvider::Noop.new()}
 $default_opts[:git_opts] = {}
-
-require_relative '../custom.rb'
+GitFlow.process_environment_variables()
+require_relative '../custom.rb' if File.file?('../custom.rb')
 $default_opts.freeze()
+GitFlow.validate()
 
 
 module GitFlow
@@ -36,14 +37,33 @@ module GitFlow
   def self.tear_down()
     FileUtils::rm_rf($tmpdir)
   end
+  def self.validate()
+    raise "No git repository specified" if $git_url.nil? and $git_path.nil?
+  end
 
-  def self.prepare_repo(opts)   
+  def self.process_environment_variables()
+    $git_url      = ENV['GIT_URL']
+    $git_user     = ENV['GIT_USER']
+    $git_password = ENV['GIT_PASSWORD']
+    $git_path     = ENV['GIT_PATH']
+
+    $default_opts[:log_level] = Logger::DEBUG if ENV['VERBOSE'] == 'true'
+    $default_opts[:log_level] = Logger::WARN  if ENV['QUIET'] == 'true'
+
+    $default_opts[:clear_tmp] = false  if ENV['CLEAR_TMP'] == 'false'
+  end
+
+  def self.prepare_repo(opts)
     clone_repo(opts) unless $git_url.nil?
     local_repo(opts) unless $git_path.nil?
   end
   def self.clone_repo(opts)
     $logger.info("Cloning git Repository from: #{$git_url}")
     dir = File.join($tmpdir, 'repo')
+
+    # make Credentials
+    opts[:credentials] = Rugged::Credentials::UserPassword.new(username: $git_user, password: $git_pssword) if $git_user and $git_password
+
     $git_repo = Rugged::Repository.clone_at($git_url, dir, opts)
     raise "Failed to clone repository at #{$git_url}" if $git_repo.nil?
   end
