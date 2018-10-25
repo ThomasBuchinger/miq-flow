@@ -23,20 +23,20 @@ module GitFlow
     # @option opts [String] :miq_priority(10)
     # @option opts [String] :miq_fs_domain(nil)
     def _set_defaults(opts={})
-      @remote_name   = opts.fetch(:remote_name,   'origin')
-      @base          = opts.fetch(:base,          'master')
-      @prefixes      = opts.fetch(:prefix,        ['feature', 'fix'] )
-      @miq_provider  = opts.fetch(:provider,      nil )
-      @automate_dir  = opts.fetch(:automate_dir,  'automate' )
-      @miq_prioritiy = opts.fetch(:miq_priority,  10 )
-      @miq_fs_domain = opts.fetch(:miq_fs_domain, nil )
+      @remote_name       = opts.fetch(:remote_name,       'origin')
+      @base              = opts.fetch(:base,              'master')
+      @prefixes          = opts.fetch(:prefix,            ['feature', 'fix'] )
+      @miq_provider      = opts.fetch(:provider,          nil )
+      @automate_dir      = opts.fetch(:automate_dir,      'automate' )
+      @miq_prioritiy     = opts.fetch(:miq_priority,      10 )
+      @miq_fs_domain     = opts.fetch(:miq_fs_domain,     nil )
+      @miq_import_method = opts.fetch(:miq_import_method, :dirty)
     end
 
 
     def _create_miq(domain_name)
       @miq_domain    = domain_name
       @miq_fs_domain = @miq_fs_domain || domain_name
-      @miq_import_method = :dirty
       @miq_provider  = @miq_provider || GitFlow::MiqProvider::Noop.new
     end
     
@@ -59,10 +59,10 @@ module GitFlow
     #
     def deploy()
       @git_repo.checkout(@git_branch)
-      $logger.debug("Deploying: #{@miq_domain}") 
+      $logger.info("Deploying: #{@miq_domain}") 
 
       import_dir = prepare_import(@miq_import_method, @miq_domain)
-      @miq_provider.import(import_dir, @miq_fs_domain, @miq_domain)
+      @miq_provider.import(File.join(import_dir, @automate_dir), @miq_fs_domain, @miq_domain)
       cleanup_import(@miq_import_method)
       
     end

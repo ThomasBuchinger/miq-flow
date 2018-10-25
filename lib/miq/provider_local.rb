@@ -11,9 +11,9 @@ module GitFlow
 
       def import(tmpdir, fs_domain, miq_domain)
         commands =  [
-          "rake -f /var/www/miq/vmdb/Rakefile evm:automate:import DOMAIN=#{fs_domain} IMPORT_AS=#{miq_domain} IMPORT_DIR=#{tmpdir}/automate OVERWRITE=true PREVIEW=false ENABLED=true"
+          "rake -f /var/www/miq/vmdb/Rakefile evm:automate:import DOMAIN=#{fs_domain} IMPORT_AS=#{miq_domain} IMPORT_DIR=#{tmpdir} OVERWRITE=true PREVIEW=false ENABLED=true"
         ]
-        $logger.debug('Importing with Appliance provider')
+        $logger.info('Importing with Appliance provider')
         commands.each do |cmd|
           system(cmd)
         end

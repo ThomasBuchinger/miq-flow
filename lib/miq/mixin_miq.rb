@@ -4,11 +4,16 @@ module GitFlow
   # This module contains everything needed to prepare an Automate domain for import
   # Mostly file handling at this point
   module MiqMethods
-    def prepare_import(method, paths)
-      self.send("prepare_import_#{method}".to_sym, paths)
+    def prepare_import(method, feature)
+      self.send("prepare_import_#{method}".to_sym, feature)
     end
     def cleanup_import(method)
       self.send("cleanup_import_#{method}".to_sym)
+    end
+    def prepare_import_clean(feature)
+      $git_repo.workdir.chomp('/')
+    end
+    def cleanup_import_clean()
     end
 
     def prepare_import_dirty(feature)

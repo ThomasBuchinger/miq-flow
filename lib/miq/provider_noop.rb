@@ -10,7 +10,7 @@ module GitFlow
       end
 
       def import(tmpdir, fs_domain, miq_domain)
-        $logger.debug("Importing with NOOP provider MIQ_DOMAIN=#{miq_domain} TMPDIR=#{tmpdir}")
+        $logger.info("Importing with NOOP provider MIQ_DOMAIN=#{miq_domain} TMPDIR=#{tmpdir}")
       end
 
     end

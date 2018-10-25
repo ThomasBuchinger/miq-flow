@@ -12,11 +12,13 @@ module GitFlow
       end
 
       def import(tmpdir, fs_domain, miq_domain)
+        $logger.debug("TMPDIR=#{tmpdir}") 
         commands =  [
-          "docker cp #{tmpdir}/#{@automate_dir} #{@container_name}:#{tmpdir}",
-          "docker exec #{@container_name} /bin/bash --login -c 'rake evm:automate:import DOMAIN=#{fs_domain} IMPORT_AS=#{miq_domain} IMPORT_DIR=#{tmpdir}/automate OVERWRITE=true PREVIEW=false ENABLED=true'"
+          "docker exec #{@container_name} mkdir -p #{tmpdir}",
+          "docker cp #{tmpdir}/. #{@container_name}:#{tmpdir}",
+          "docker exec #{@container_name} /bin/bash --login -c 'rake evm:automate:import DOMAIN=#{fs_domain} IMPORT_AS=#{miq_domain} IMPORT_DIR=#{tmpdir} OVERWRITE=true PREVIEW=false ENABLED=true'"
         ]
-        $logger.debug('Importing with Docker provider')
+        $logger.info('Importing with Docker provider')
         commands.each do |cmd|
           system(cmd)
         end
