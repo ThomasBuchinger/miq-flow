@@ -21,7 +21,7 @@ DISCLAIMER: This is work-in-progress, expect things to change without warning an
   * Define a global variable `$git_url` to clone the repository. Credentials and other parameters can be defined in `$default_opts[:git_opts]`, see [Rugged Documentation](https://www.rubydoc.info/github/libgit2/rugged/Rugged/Repository#clone_at-class_method) for details.
 * Run `./bin/cli.rb` with the correct `--provider` option:
   * `local`: This provider assumes running on a ManageIQ Appliance and uses the Rake Tasks of ManageIQ
-  * `noop`: Preview what the scrpit wpuld do, without modifying ManageIQ
+  * `noop`: Preview what the scrpit would do, without modifying ManageIQ
   * `docker`: This Provider assumes a [manageiq/manageiq](https://hub.docker.com/r/manageiq/manageiq/) container running. (mostly for development)
 
 ## Commands
