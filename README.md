@@ -18,7 +18,7 @@ automate-gitflow uses the diff information in git to create partial domains, whi
 # How do I use it?
 DISCLAIMER: This is work-in-progress, expect things to change without warning and the occasional stack trace.
 * Clone the repository onto your ManageIQ Appliance 
-* Rename `example_custom.rb` to `custom.rb`. You have to at least configure `$git_url`/`$git_path` and `$export_name` 
+* Rename `example_custom.rb` to `custom.rb`. You have to configure at least `$git_url`/`$git_path` and `$export_name` 
 * Run `./bin/cli.rb` with the correct `--provider` option:
   * `local`: This provider assumes running on a ManageIQ Appliance and uses the Rake Tasks of ManageIQ
   * `noop`: Preview what the scrpit would do, without modifying ManageIQ
