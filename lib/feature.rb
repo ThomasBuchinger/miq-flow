@@ -50,7 +50,7 @@ module GitFlow
       _set_defaults(opts)
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{miq_domain}")
 
-      raise 'Unable to find git repo' if @git_repo.nil?()
+      raise GitFlow::Error, 'Unable to find git repo' if @git_repo.nil?()
       _create_git(branch_name, @git_repo)
       _create_miq(miq_domain)
     end

@@ -1,4 +1,6 @@
 module GitFlow
+  class Error < StandardError; end  
+
   def self.init()
     # prepare directories
     #
@@ -19,7 +21,11 @@ module GitFlow
     FileUtils::rm_rf($tmpdir) if $default_opts[:clear_tmp] == true
   end
   def self.validate()
-    raise "No git repository specified" if $git_url.nil? and $git_path.nil?
+    if $git_url.nil? and $git_path.nil?
+      STDERR.puts("No git repository specified")
+      valid = false
+    end
+    valid != false
   end
 
   
@@ -47,12 +53,20 @@ module GitFlow
     # make Credentials
     opts[:credentials] = Rugged::Credentials::UserPassword.new(username: $git_user, password: $git_pssword) if $git_user and $git_password
 
-    $git_repo = Rugged::Repository.clone_at($git_url, dir, opts)
-    raise "Failed to clone repository at #{$git_url}" if $git_repo.nil?
+    begin 
+      $git_repo = Rugged::Repository.clone_at($git_url, dir, opts)
+    rescue Rugged::NetworkError => e
+      raise GitFlow::Error, "Failed to clone repository at #{$git_url}: #{e}"
+    rescue Rugged::RepositoryError => e
+      raise GitFlow::Error, "Failed to clone repository at #{$git_url}: #{e}"
+    end
   end
   def self.local_repo(opts)
     $logger.info("Using git Repository: #{$git_path}")
-    $git_repo = Rugged::Repository.discover($git_path, opts.fetch(:accross_fs, true))
-    raise "Failed to clone repository at #{$git_path}" if $git_repo.nil?
+    begin
+      $git_repo = Rugged::Repository.discover($git_path, opts.fetch(:accross_fs, true))
+    rescue Rugged::RepositoryError => e
+      raise GitFlow::Error, "Failed to find a repository at #{$git_path}" if $git_repo.nil?
+    end
   end
 end

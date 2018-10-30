@@ -16,4 +16,4 @@ $default_opts[:git_opts] = {}
 GitFlow.process_environment_variables()
 require_relative '../custom.rb' if File.file?(File.expand_path(File.join(lib_dir, '..', 'custom.rb')))
 $default_opts.freeze()
-GitFlow.validate()
+GitFlow.validate() ? true : exit(1)

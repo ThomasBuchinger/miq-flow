@@ -51,4 +51,9 @@ module GitFlow
     end
   end
 end
-GitFlow::Cli.start()
+begin
+  GitFlow::Cli.start()
+rescue GitFlow::Error => e
+  $logger.error(e.to_s)
+  GitFlow.tear_down()
+end

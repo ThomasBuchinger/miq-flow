@@ -13,9 +13,9 @@ module GitFlow
     # @param [Rugged::Repository] repo
     def _create_git(branch_name, repo)
       @git_branch = create_local_branch(branch_name, repo)
-      raise "Unable to find feature branch: #{branch_name}" if @git_branch.nil?()
+      raise GitFlow::Error, "Unable to find feature branch: #{branch_name}" if @git_branch.nil?()
       @git_base   = merge_base(repo, branch_name)
-      raise "Unable to find base branch: #{@base}"        if @git_base.nil?()
+      raise GitFlow::Error, "Unable to find base branch: #{@base}"        if @git_base.nil?()
     end
 
     # Creates a local branch tracking upstream if it does not already exist
@@ -24,9 +24,11 @@ module GitFlow
     def create_local_branch(branch_name, repo)
       local_branch  = repo.branches[branch_name]
       return local_branch unless local_branch.nil?
-      
+            
       $logger.debug("Creating local branch: #{branch_name}")
       rbranch = "#{@remote_name}/#{branch_name}"
+      raise GitFlow::Error, "Unable to find remote branch #{rbranch}" if repo.branches[rbranch].nil?()
+
       repo.create_branch(branch_name, rbranch)
     end
 
@@ -53,8 +55,8 @@ module GitFlow
       base = base || @git_base
       head = head || @git_branch
 
-      raise "Diff failed: base is nil"   if base.nil?
-      raise "Diff failed: branch is nil" if head.nil?
+      raise GitFlow::Error, "Diff failed: base is nil"   if base.nil?
+      raise GitFlow::Error, "Diff failed: branch is nil" if head.nil?
 
       paths = []
       base_commit = base.kind_of?(Rugged::Reference) ? base.target : base
