@@ -15,6 +15,7 @@ module GitFlow
     option :priority, :type => :numeric 
     option :provider
     def deploy(name)
+      GitFlow.init()
       miq_domain   = options[:domain] || (name.split(/-/) || [])[2] || name
       provider     = GitFlow::MiqProvider::Appliance.new() if options[:provider] == 'local'
       provider     = GitFlow::MiqProvider::Docker.new()    if options[:provider] == 'docker'
@@ -25,16 +26,20 @@ module GitFlow
       feature_opts[:provider] = provider unless provider.nil?
       feature = GitFlow::Feature.new(name, $default_opts[:feature_defaults].merge(feature_opts))
       feature.deploy()
+      GitFlow.tear_down()
     end
 
     desc 'devel1', 'Development NOOP command' 
     def devel1()
+      GitFlow.init()
       feature_opts = { :miq_fs_domain=>'buc', :miq_domain=>'f1' }
       f1 = GitFlow::Feature.new('feature-1-f1', $default_opts[:feature_defaults].merge(feature_opts))
       f1.deploy()
+      GitFlow.tear_down()
     end
     desc 'devel2', 'Development ACTIVE command ' 
     def devel2()
+      GitFlow.init()
       provider = GitFlow::MiqProvider::Docker.new()
       feature_opts = { :miq_fs_domain=>'buc', :miq_domain=>'base', :provider=>provider, :miq_import_method=>:clean, :automate_dir=>'automate'}
       master = GitFlow::Feature.new('master', $default_opts[:feature_defaults].merge(feature_opts))
@@ -42,10 +47,8 @@ module GitFlow
       feature_opts = { :miq_fs_domain=>'buc', :miq_domain=>'f1', :provider=>provider }
       f1 = GitFlow::Feature.new('feature-1-f1', $default_opts[:feature_defaults].merge(feature_opts))
       f1.deploy()
+      GitFlow.tear_down()
     end
-
   end
 end
-GitFlow.init()
 GitFlow::Cli.start()
-#GitFlow.tear_down() if $default_opts[:clear_tmp] == true

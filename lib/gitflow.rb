@@ -16,11 +16,13 @@ module GitFlow
     prepare_repo($default_opts[:git_opts])
   end
   def self.tear_down()
-    FileUtils::rm_rf($tmpdir)
+    FileUtils::rm_rf($tmpdir) if $default_opts[:clear_tmp] == true
   end
   def self.validate()
     raise "No git repository specified" if $git_url.nil? and $git_path.nil?
   end
+
+  
 
   def self.process_environment_variables()
     $git_url      = ENV['GIT_URL']
