@@ -31,15 +31,20 @@ module GitFlow
   
 
   def self.process_environment_variables()
-    $git_url      = ENV['GIT_URL']
-    $git_user     = ENV['GIT_USER']
-    $git_password = ENV['GIT_PASSWORD']
-    $git_path     = ENV['GIT_PATH']
+    # Git params
+    $git_url      = ENV['GIT_URL']      || $git_url
+    $git_user     = ENV['GIT_USER']     || $git_user
+    $git_password = ENV['GIT_PASSWORD'] || $git_password
+    $git_path     = ENV['GIT_PATH']     || $git_path
 
-    $default_opts[:log_level] = Logger::DEBUG if ENV['VERBOSE'] == 'true'
+    # MIQ params
+    $default_opts[:feature_defaults][:miq_fs_domain] = ENV['EXPORT_NAME'] || ENV['MIQ_FS_DOMAIN'] || $export_name
+
+    # Misc
+    $default_opts[:log_level] = Logger::DEBUG if ENV['VERBOSE'] == 'true' 
     $default_opts[:log_level] = Logger::WARN  if ENV['QUIET'] == 'true'
-
     $default_opts[:clear_tmp] = false  if ENV['CLEAR_TMP'] == 'false'
+    puts $default_opts
   end
 
   def self.prepare_repo(opts)

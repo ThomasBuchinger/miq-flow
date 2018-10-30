@@ -1,11 +1,13 @@
 # ManageIQ Automate GitFlow Importer
 This command line utility implements a git-based branching workflow (GitFlow) on top of the default ManageIQ Automate Import/Export Scripts.
 
+Automation Engine is ManageIQ's way to integrate IT infrastructure into the wider Enterprise (e.g. CMDB, change management, billing, ...). 
+It is common for ManageIQ deployments to have a shared DEV environment, because custom Automate Methods not only depend on access to the APIs of backend systems, but also on the ServiceModels exposed by Automate Engine. 
+
 # The Problem
-ManageIQ provides a workflow enginge (Automate Engine) 
 ManageIQ does provide import/export scripts for Automate domains, however the default scripts are not compatible with GitFlow for the following reasons:
 * The Importer cannot handle partial imports for Automate domains
-* Since higher priority domains shadow lower priority ones, any domain modeling a feature-branch MUST only contain changed files (which is a concept not easily translateable into git).
+* Since higher priority domains override lower priority ones, any domain modeling a feature-branch MUST only contain changed files (which is a concept not easily translateable into git).
 
 # How does automate-gitflow help?
 automate-gitflow uses the diff information in git to create partial domains, which can be imported with the default importer.
@@ -15,10 +17,8 @@ automate-gitflow uses the diff information in git to create partial domains, whi
 
 # How do I use it?
 DISCLAIMER: This is work-in-progress, expect things to change without warning and the occasional stack trace.
-* Pull the repository
-* Create a file called 'custom.rb' in the repository root
-  * Define a global variable `$git_path` to use a local git repository
-  * Define a global variable `$git_url` to clone the repository. Credentials and other parameters can be defined in `$default_opts[:git_opts]`, see [Rugged Documentation](https://www.rubydoc.info/github/libgit2/rugged/Rugged/Repository#clone_at-class_method) for details.
+* Clone the repository onto your ManageIQ Appliance 
+* Rename `example_custom.rb` to `custom.rb`. You have to configure at least `$git_url`/`$git_path` and `$export_name` 
 * Run `./bin/cli.rb` with the correct `--provider` option:
   * `local`: This provider assumes running on a ManageIQ Appliance and uses the Rake Tasks of ManageIQ
   * `noop`: Preview what the scrpit would do, without modifying ManageIQ
