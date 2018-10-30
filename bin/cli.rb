@@ -11,9 +11,10 @@ module GitFlow
     end
 
     desc "deploy NAME", "Deploy a Feature Branch"
-    option :domain
-    option :priority, :type => :numeric 
-    option :provider
+    option :domain, desc: "specify the automate domain to use (default: 3rd segment of NAME, seperted by '-')"
+    option :export_name, desc: "name of the domain on the filesystem", alias: 'miq_fs_domain'
+    option :priority, type: :numeric 
+    option :provider, desc: "How to talk to ManageIQ (default: noop)"
     def deploy(name)
       GitFlow.init()
       miq_domain   = options[:domain] || (name.split(/-/) || [])[2] || name
@@ -22,8 +23,9 @@ module GitFlow
       provider     = GitFlow::MiqProvider::Noop.new()      if options[:provider] == 'noop'
 
       feature_opts = {:miq_domain=>miq_domain, :provider=>provider}
-      feature_opts[:miq_priority] = options[:priority] unless options[:priority].nil?
-      feature_opts[:provider] = provider unless provider.nil?
+      feature_opts[:miq_priority]  = options[:priority]    unless options[:priority].nil?
+      feature_opts[:provider]      = provider              unless provider.nil?
+      feature_opts[:miq_fs_domain] = options[:export_name] unless options[:export_name].nil?
       feature = GitFlow::Feature.new(name, $default_opts[:feature_defaults].merge(feature_opts))
       feature.deploy()
       GitFlow.tear_down()

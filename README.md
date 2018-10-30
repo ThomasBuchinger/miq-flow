@@ -1,7 +1,8 @@
 # ManageIQ Automate GitFlow Importer
 This command line utility implements a git-based branching workflow (GitFlow) on top of the default ManageIQ Automate Import/Export Scripts.
 
-Automation Engine is ManageIQ's way to integrate IT infrastructure into the wider Enterprise (e.g. CMDB, change management, billing, ...). This integration TODO 
+Automation Engine is ManageIQ's way to integrate IT infrastructure into the wider Enterprise (e.g. CMDB, change management, billing, ...). 
+It is common for ManageIQ deployments to have a shared DEV environment, because custom Automate Methods not only depend on access to the APIs of backend systems, but also on the ServiceModels exposed by Automate Engine. 
 
 # The Problem
 ManageIQ does provide import/export scripts for Automate domains, however the default scripts are not compatible with GitFlow for the following reasons:
@@ -17,10 +18,7 @@ automate-gitflow uses the diff information in git to create partial domains, whi
 # How do I use it?
 DISCLAIMER: This is work-in-progress, expect things to change without warning and the occasional stack trace.
 * Clone the repository onto your ManageIQ Appliance 
-* Rename `example_custom.rb` to `custom.rb`. 
-  * Define a global variable `$git_path` to use a local git repository
-  * Define a global variable `$git_url` to clone the repository. The `$git_user` and `$git_password` are used for authentication 
-  * `$master_domain`
+* Rename `example_custom.rb` to `custom.rb`. You have to at least configure `$git_url`/`$git_path` and `$export_name` 
 * Run `./bin/cli.rb` with the correct `--provider` option:
   * `local`: This provider assumes running on a ManageIQ Appliance and uses the Rake Tasks of ManageIQ
   * `noop`: Preview what the scrpit would do, without modifying ManageIQ
