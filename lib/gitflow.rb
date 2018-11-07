@@ -56,7 +56,7 @@ module GitFlow
     dir = File.join($tmpdir, 'repo')
 
     # make Credentials
-    opts[:credentials] = Rugged::Credentials::UserPassword.new(username: $git_user, password: $git_pssword) if $git_user and $git_password
+    opts[:credentials] = Rugged::Credentials::UserPassword.new(username: $git_user, password: $git_password) if $git_user and $git_password
 
     begin 
       $git_repo = Rugged::Repository.clone_at($git_url, dir, opts)
