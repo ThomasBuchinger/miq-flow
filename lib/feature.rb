@@ -1,5 +1,5 @@
 require_relative 'git/mixin_git.rb'
-require_relative 'miq/mixin_miq.rb'
+require_relative 'domain.rb'
 
 module GitFlow
   # A feature the top level object representing a feature-branch.
@@ -7,7 +7,6 @@ module GitFlow
   #
   class Feature
     include GitFlow::GitMethods
-    include GitFlow::MiqMethods
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
@@ -26,45 +25,35 @@ module GitFlow
       @remote_name       = opts.fetch(:remote_name,       'origin')
       @base              = opts.fetch(:base,              'master')
       @prefixes          = opts.fetch(:prefix,            ['feature', 'fix'] )
-      @miq_provider      = opts.fetch(:provider,          nil )
-      @automate_dir      = opts.fetch(:automate_dir,      'automate' )
-      @miq_prioritiy     = opts.fetch(:miq_priority,      10 )
-      @miq_fs_domain     = opts.fetch(:miq_fs_domain,     nil )
-      @miq_import_method = opts.fetch(:miq_import_method, :dirty)
     end
 
 
-    def _create_miq(domain_name)
-      @miq_domain    = domain_name
-      @miq_fs_domain = @miq_fs_domain || domain_name
-      @miq_provider  = @miq_provider || GitFlow::MiqProvider::Noop.new
-    end
     
     # Represents a feature-branch
     #
     # @param [String] branch_name 
     # @option opts @see _set_defaults
-    def initialize(branch_name, opts={}) 
-      miq_domain = opts.fetch(:miq_domain, branch_name.split(/-/)[2]) || branch_name
+    def initialize(branch_name, opts={})
+      domain_name = opts.fetch(:miq_domain, branch_name.split(/-/)[2]) || branch_name
       @git_repo  = opts.fetch(:git_repo, nil) || $git_repo
       _set_defaults(opts)
-      $logger.debug("Creating Feature: branch=#{branch_name} domain=#{miq_domain}")
+      $logger.debug("Creating Feature: branch=#{branch_name} domain=#{domain_name}")
 
       raise GitFlow::Error, 'Unable to find git repo' if @git_repo.nil?()
       _create_git(branch_name, @git_repo)
-      _create_miq(miq_domain)
+
+      @miq_domain = [ GitFlow::MiqDomain.new(domain_name, opts) ]
     end
 
     # Deploys the feature to ManageIQ
     #
     def deploy()
       @git_repo.checkout(@git_branch)
-      $logger.info("Deploying: #{@miq_domain}") 
+      @miq_domain.each do |domain|
+        $logger.info("Deploying: #{domain.name}")
+        domain.deploy()
+      end 
 
-      import_dir = prepare_import(@miq_import_method, @miq_domain)
-      @miq_provider.import(File.join(import_dir, @automate_dir), @miq_fs_domain, @miq_domain)
-      cleanup_import(@miq_import_method)
-      
     end
 
   end

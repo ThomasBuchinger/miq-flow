@@ -4,11 +4,14 @@ require 'logger'
 
 lib_dir = __dir__
 $LOAD_PATH << lib_dir
-require 'feature.rb'
-require 'gitflow.rb'
 require 'miq/provider_docker.rb'
 require 'miq/provider_local.rb'
 require 'miq/provider_noop.rb'
+require 'miq/method_partial.rb'
+require 'miq/method_clean.rb'
+require 'domain.rb'
+require 'feature.rb'
+require 'gitflow.rb'
 
 $default_opts = { :clear_tmp => true }
 $default_opts[:feature_defaults] = {}
