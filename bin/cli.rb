@@ -18,13 +18,10 @@ module GitFlow
     def deploy(name)
       GitFlow.init()
       miq_domain   = options[:domain] || (name.split(/-/) || [])[2] || name
-      provider     = GitFlow::MiqProvider::Appliance.new() if options[:provider] == 'local'
-      provider     = GitFlow::MiqProvider::Docker.new()    if options[:provider] == 'docker'
-      provider     = GitFlow::MiqProvider::Noop.new()      if options[:provider] == 'noop'
 
-      feature_opts = {:miq_domain=>miq_domain, :provider=>provider}
+      feature_opts = {:miq_domain=>miq_domain}
       feature_opts[:miq_priority]  = options[:priority]    unless options[:priority].nil?
-      feature_opts[:provider]      = provider              unless provider.nil?
+      feature_opts[:provider]      = options.fetch(:provider, 'default')
       feature_opts[:miq_fs_domain] = options[:export_name] unless options[:export_name].nil?
       feature = GitFlow::Feature.new(name, $default_opts[:feature_defaults].merge(feature_opts))
       feature.deploy()
@@ -36,7 +33,8 @@ module GitFlow
       GitFlow.init()
       feature_opts = { :miq_fs_domain=>'buc', :miq_domain=>'f1' }
       f1 = GitFlow::Feature.new('feature-1-f1', $default_opts[:feature_defaults].merge(feature_opts))
-      f1.deploy()
+      f1.discover_domains()
+#      f1.deploy()
       GitFlow.tear_down()
     end
     desc 'devel2', 'Development ACTIVE command ' 

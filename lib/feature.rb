@@ -27,6 +27,7 @@ module GitFlow
       @remote_name       = opts.fetch(:remote_name,       'origin')
       @base              = opts.fetch(:base,              'master')
       @prefixes          = opts.fetch(:prefix,            ['feature', 'fix'] )
+      @provider          = opts.fetch(:provider,          'default')
     end
 
 
@@ -62,7 +63,7 @@ module GitFlow
     # Finds all Domains in the Repository
     #
     def discover_domains()
-      feature_level_params = {:feature_name=>@name, :branch_name => @git_branch.name}
+      feature_level_params = {:feature_name=>@name, :branch_name => @git_branch.name, :provider=>@provider}
       domains = find_domain_files(@git_repo.workdir)
       domains.map{|dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params))}
     end

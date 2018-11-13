@@ -57,7 +57,7 @@ module GitFlow
       @miq_provider = GitFlow::MiqProvider::Noop.new      if opts[:provider_name] == 'noop'
       @miq_provider = GitFlow::MiqProvider::Appliance.new if opts[:provider_name] == 'local'
       @miq_provider = GitFlow::MiqProvider::Docker.new    if opts[:provider_name] == 'docker'
-      @miq_provider = GitFlow::MiqProvider::Noop.new      @miq_provider.nil?
+      @miq_provider = GitFlow::MiqProvider::Noop.new      if @miq_provider.nil?
     end
 
     def prepare_import(domain_data, feature_data)
