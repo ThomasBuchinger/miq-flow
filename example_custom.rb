@@ -1,6 +1,9 @@
 # Set logging level
 # $default_opts[:log_level] = Logger::DEBUG
 
+# Remove the temporary working directory on exit
+# $default_opts[:clear_tmp] = true
+
 # Configure git repository
 #
 # Configure a remote repository (which will be cloned to a temporary directory when needed)
