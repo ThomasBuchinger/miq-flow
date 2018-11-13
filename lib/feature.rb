@@ -1,3 +1,4 @@
+require 'pathname'
 require_relative 'git/mixin_git.rb'
 require_relative 'domain.rb'
 
@@ -7,6 +8,7 @@ module GitFlow
   #
   class Feature
     include GitFlow::GitMethods
+    include GitFlow::MiqMethods::MiqUtils
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
@@ -34,26 +36,35 @@ module GitFlow
     # @param [String] branch_name 
     # @option opts @see _set_defaults
     def initialize(branch_name, opts={})
-      domain_name = opts.fetch(:miq_domain, branch_name.split(/-/)[2]) || branch_name
-      @git_repo  = opts.fetch(:git_repo, nil) || $git_repo
       _set_defaults(opts)
-      $logger.debug("Creating Feature: branch=#{branch_name} domain=#{domain_name}")
+      @name = opts.fetch(:feature_name, branch_name.split(/-/)[2]) || branch_name
+      $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
 
+      @git_repo  = opts.fetch(:git_repo, nil) || $git_repo
       raise GitFlow::Error, 'Unable to find git repo' if @git_repo.nil?()
       _create_git(branch_name, @git_repo)
 
-      @miq_domain = [ GitFlow::MiqDomain.new(domain_name, opts) ]
+      @miq_domain  = discover_domains()
     end
 
     # Deploys the feature to ManageIQ
     #
     def deploy()
       @git_repo.checkout(@git_branch)
+      deploy_opts = {:changeset=>get_diff_paths(), :git_workdir=>@git_repo.workdir}
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")
-        domain.deploy()
+        domain.deploy(deploy_opts)
       end 
 
+    end
+
+    # Finds all Domains in the Repository
+    #
+    def discover_domains()
+      feature_level_params = {:feature_name=>@name, :branch_name => @git_branch.name}
+      domains = find_domain_files(@git_repo.workdir)
+      domains.map{|dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params))}
     end
 
   end
