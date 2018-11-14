@@ -10,6 +10,13 @@ module GitFlow
 
     end
 
+    desc "inspect NAME", "List domains"
+    def inspect(name)
+      GitFlow.init()
+      feature = GitFlow::Feature.new(name, {})
+      puts feature.show()
+    end
+
     desc "deploy NAME", "Deploy a Feature Branch"
     option :domain, desc: "specify the automate domain to use (default: 3rd segment of NAME, seperted by '-')"
     option :export_name, desc: "name of the domain on the filesystem", alias: 'miq_fs_domain'
