@@ -70,6 +70,8 @@ module GitFlow
     def deploy(opts)
       $logger.error("Deploy in Domain: #{self.instance_variables.map{|v| "#{v}=#{self.instance_variable_get(v)}" }}")
       opts[:changeset] = _limit_changeset(opts.fetch(:changeset, []))
+      return true if opts[:skip_empty] and opts[:changeset].empty?()
+
       prep_data = prepare_import(self, opts)
       @miq_provider.import(File.join(prep_data[:import_dir], 'automate'), @export_name, @name)
       cleanup_import(prep_data)

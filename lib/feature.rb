@@ -52,7 +52,7 @@ module GitFlow
     #
     def deploy()
       @git_repo.checkout(@git_branch)
-      deploy_opts = {:changeset=>get_diff_paths(), :git_workdir=>@git_repo.workdir}
+      deploy_opts = {:changeset=>get_diff_paths(), :git_workdir=>@git_repo.workdir, :skip_empty=>true}
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")
         domain.deploy(deploy_opts)

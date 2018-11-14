@@ -24,13 +24,12 @@ module GitFlow
     option :provider, desc: "How to talk to ManageIQ (default: noop)"
     def deploy(name)
       GitFlow.init()
-      miq_domain   = options[:domain] || (name.split(/-/) || [])[2] || name
+      miq_domain = options[:domain] || (name.split(/-/) || [])[2] || name
+      provider   = options.fetch(:provider, 'default')
 
-      feature_opts = {:miq_domain=>miq_domain}
-      feature_opts[:miq_priority]  = options[:priority]    unless options[:priority].nil?
-      feature_opts[:provider]      = options.fetch(:provider, 'default')
-      feature_opts[:miq_fs_domain] = options[:export_name] unless options[:export_name].nil?
-      feature = GitFlow::Feature.new(name, $default_opts[:feature_defaults].merge(feature_opts))
+      opts = {:feature_name=>miq_domain, :provider=>provider}
+      opts[:miq_priority]  = options[:priority]    unless options[:priority].nil?
+      feature = GitFlow::Feature.new(name, opts)
       feature.deploy()
       GitFlow.tear_down()
     end
