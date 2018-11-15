@@ -70,5 +70,12 @@ module GitFlow
       paths
     end
 
+    def self.get_remote_branches(prefix=nil, remote=nil, repo=nil)
+      prefixes    = prefix || @prefix || ['feature', 'fix', 'master']
+      remote_name = remote || @remote || 'origin'
+      repo        = @git_repo || $git_repo
+      repo.branches.each(:remote).select{|remote_branch| prefixes.any?{|prefix| remote_branch.name.match("#{remote_name}/#{prefix}")  } }
+    end
+
   end
 end

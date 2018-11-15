@@ -68,8 +68,8 @@ module GitFlow
       domains.map{|dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params))}
     end
 
-    def show()
-      commit = merge_base(@git_repo, @git_branch.name)
+    def show_details()
+      commit = @git_base
       paths  = get_diff_paths()
       ret = []
       ret << "Feature: #{@name} on branch #{@git_branch.name} "
@@ -81,6 +81,12 @@ module GitFlow
         dom._limit_changeset(paths).each{|path| ret << "  #{path}" }
       end
       return ret.join("\n")
+    end
+    def show_summary()
+      paths  = get_diff_paths()
+      domain_info = @miq_domain.map{|dom| {:name=>dom.name, :change_num=>dom._limit_changeset(paths).length}}
+      domain_string = domain_info.map{|d| "#{d[:name]}: #{d[:change_num]}"}.join(' ')
+      return "#{@git_branch.name}: #{domain_string}"
     end
 
   end

@@ -7,14 +7,17 @@ module GitFlow
 
     desc "list", "List Feature branches "
     def list()
-
+      GitFlow.init()
+      branches = GitFlow::GitMethods.get_remote_branches()
+      puts branches.map{|b| GitFlow::Feature.new(b.name, {}).show_summary() }
     end
 
     desc "inspect NAME", "List domains"
+    option :short, type: :boolean, default: false
     def inspect(name)
       GitFlow.init()
       feature = GitFlow::Feature.new(name, {})
-      puts feature.show()
+      puts options[:short] ? feature.show_summary() : feature.show_details()
     end
 
     desc "deploy NAME", "Deploy a Feature Branch"
