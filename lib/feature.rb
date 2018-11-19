@@ -27,7 +27,6 @@ module GitFlow
       @remote_name       = opts.fetch(:remote_name,       'origin')
       @base              = opts.fetch(:base,              'master')
       @prefixes          = opts.fetch(:prefix,            ['feature', 'fix'] )
-      @provider          = opts.fetch(:provider,          'default')
     end
 
 
@@ -45,14 +44,17 @@ module GitFlow
       raise GitFlow::Error, 'Unable to find git repo' if @git_repo.nil?()
       _create_git(branch_name, @git_repo)
 
-      @miq_domain  = discover_domains()
+      method   = opts.fetch(:miq_import_method, 'partial')
+      provider = opts.fetch(:provider,          'default')
+      @miq_domain  = discover_domains(provider: provider, miq_import_method: method)
     end
 
     # Deploys the feature to ManageIQ
     #
     def deploy()
       @git_repo.checkout(@git_branch)
-      deploy_opts = {:changeset=>get_diff_paths(), :git_workdir=>@git_repo.workdir, :skip_empty=>true}
+      meth = @miq_import_method
+      deploy_opts = {:changeset=>get_diff_paths(), :git_workdir=>@git_repo.workdir, :skip_empty=>[:partial].include?(meth), :miq_import_method=>meth}
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")
         domain.deploy(deploy_opts)
@@ -62,8 +64,8 @@ module GitFlow
 
     # Finds all Domains in the Repository
     #
-    def discover_domains()
-      feature_level_params = {:feature_name=>@name, :branch_name => @git_branch.name, :provider=>@provider}
+    def discover_domains(opts={})
+      feature_level_params = {:feature_name=>@name, :branch_name => @git_branch.name, :provider=>opts[:provider], :miq_import_method=>opts[:miq_import_method]}
       domains = find_domain_files(@git_repo.workdir)
       domains.map{|dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params))}
     end

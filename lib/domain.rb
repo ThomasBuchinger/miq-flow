@@ -12,13 +12,10 @@ module GitFlow
 
     # Sets up a bunch of instance variables 
     #
-    # @option opts [GitFlow::MiqProvider] :provider(GitFlow::MiqProvider::Noop)
-    # @option opts [String] :automate_dir('automate')
-    # @option opts [String] :miq_priority(10)
-    # @option opts [String] :miq_fs_domain(nil)
     def _set_defaults(opts={})
       @miq_provider_name = opts.fetch(:miq_provider,      'noop')
-      @export_dir        = opts.fetch(:export_dir,        'automate' )
+      @export_dir        = opts.fetch(:export_dir,        nil )
+      #@export_dir        = opts.fetch(:export_dir,        'automate' )
       @export_name       = opts.fetch(:export_name,       @name )
       @miq_import_method = opts.fetch(:miq_import_method, :partial)
       @miq_priority      = opts.fetch(:miq_priority,      10 )
@@ -32,8 +29,8 @@ module GitFlow
 
     def self.create_from_file(dom)
       opts = {}
-      opts[:export_dir]    = dom[:full_path]
       opts[:export_name]   = dom[:domain_name]
+      opts[:export_dir]    = dom[:relative_path]
       opts[:import_method] = dom[:import_method] 
       new_name  = "feature_#{dom[:feature_name]}_#{opts[:export_name]}"
       opts[:provider_name] = dom[:provider]
@@ -68,12 +65,15 @@ module GitFlow
     end
 
     def deploy(opts)
-      $logger.error("Deploy in Domain: #{self.instance_variables.map{|v| "#{v}=#{self.instance_variable_get(v)}" }}")
       opts[:changeset] = _limit_changeset(opts.fetch(:changeset, []))
-      return true if opts[:skip_empty] and opts[:changeset].empty?()
+      if opts[:skip_empty] and opts[:changeset].empty?()
+        $logger.info("Skipping Domain: #{@name}: empty")
+        return true
+      end
+      $logger.error("Deploy in Domain: #{self.instance_variables.map{|v| "#{v}=#{self.instance_variable_get(v)}" }}")
 
       prep_data = prepare_import(self, opts)
-      @miq_provider.import(File.join(prep_data[:import_dir], 'automate'), @export_name, @name)
+      @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
       cleanup_import(prep_data)
     end
 

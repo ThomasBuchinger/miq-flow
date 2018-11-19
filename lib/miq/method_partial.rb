@@ -14,7 +14,7 @@ module GitFlow
       $logger.debug("Doing a partial import of #{paths.join(', ')}")
       all_files        = paths + method_data + Partial.find_parent_files(base_dir, paths)
         
-      fake_domain_file = Partial.create_fake_domain(File.join(import_dir, 'automate', dom.export_name), dom.name, dom.branch_name, dom.miq_priority)
+      fake_domain_file = Partial.create_fake_domain(File.join(import_dir, dom.export_dir), dom.export_name, dom.branch_name, dom.miq_priority)
       Partial.copy_to_tmp(import_dir, base_dir, all_files)
       { :import_dir => import_dir }
     end
@@ -42,7 +42,7 @@ module GitFlow
         domain['object']['attributes']['tenant_id']    = 1 
         domain['object']['attributes']['source']       = 'user'
         domain['object']['attributes']['top_level_namespace'] = nil 
-        filename = File.join(import_dir, '__domain__.yaml')
+        filename = File.join(import_dir, domain_name, '__domain__.yaml')
         $logger.debug("Creating Fake domain at #{filename}")
 
         FileUtils.mkdir_p(File.dirname(filename))
