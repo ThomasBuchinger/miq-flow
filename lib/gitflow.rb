@@ -39,7 +39,6 @@ module GitFlow
     $git_path     = ENV['GIT_PATH']     || $git_path
 
     # MIQ params
-#    $default_opts[:feature_defaults][:miq_fs_domain] = ENV['EXPORT_NAME'] || ENV['MIQ_FS_DOMAIN'] || $export_name
 
     # Misc
     $default_opts[:log_level] = Logger::DEBUG if ENV['VERBOSE'] == 'true' 

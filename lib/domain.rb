@@ -14,11 +14,9 @@ module GitFlow
     #
     def _set_defaults(opts={})
       @miq_provider_name = opts.fetch(:miq_provider,      'noop')
-      @export_dir        = opts.fetch(:export_dir,        nil )
-      #@export_dir        = opts.fetch(:export_dir,        'automate' )
+      @export_dir        = opts.fetch(:export_dir,        'automate' )
       @export_name       = opts.fetch(:export_name,       @name )
       @miq_import_method = opts.fetch(:miq_import_method, :partial)
-      @miq_priority      = opts.fetch(:miq_priority,      10 )
       @miq_priority      = opts.fetch(:miq_priority,      10 )
       @branch_name       = opts.fetch(:branch_name,       'No Branch' )
     end
@@ -32,9 +30,10 @@ module GitFlow
       opts[:export_name]   = dom[:domain_name]
       opts[:export_dir]    = dom[:relative_path]
       opts[:import_method] = dom[:import_method] 
-      new_name  = "feature_#{dom[:feature_name]}_#{opts[:export_name]}"
       opts[:provider_name] = dom[:provider]
+      opts[:branch_name]   = dom[:branch_name]
       
+      new_name  = "feature_#{dom[:feature_name]}_#{opts[:export_name]}"
       opts.select!{|_, value| !value.nil? }
       self.new(new_name, opts)
     end
@@ -58,10 +57,18 @@ module GitFlow
     end
 
     def prepare_import(domain_data, feature_data)
-      self.send("prepare_import_#{@miq_import_method}".to_sym, domain_data, feature_data)
+      begin 
+        self.send("prepare_import_#{@miq_import_method}".to_sym, domain_data, feature_data)
+      rescue NoMethodError => err
+        return {:error=>true, :miq_import_method=>@miq_import_method}
+      end
     end
     def cleanup_import(prep_data)
-      self.send("cleanup_import_#{@miq_import_method}".to_sym)
+      begin 
+        self.send("cleanup_import_#{@miq_import_method}".to_sym)
+      rescue NoMethodError => err
+        return {:error=>true, :miq_import_method=>@miq_import_method}
+      end
     end
 
     def deploy(opts)
@@ -70,11 +77,11 @@ module GitFlow
         $logger.info("Skipping Domain: #{@name}: empty")
         return true
       end
-      $logger.error("Deploy in Domain: #{self.instance_variables.map{|v| "#{v}=#{self.instance_variable_get(v)}" }}")
-
       prep_data = prepare_import(self, opts)
+      raise GitFlow::Error, "Unknown Import method: #{prep_data[:miq_import_method]}" if prep_data[:error] == true
       @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
       cleanup_import(prep_data)
+      raise GitFlow::Error, "Unknown Import method: #{prep_data[:miq_import_method]}" if prep_data[:error] == true
     end
 
   end
