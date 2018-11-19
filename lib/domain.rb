@@ -12,6 +12,13 @@ module GitFlow
 
     # Sets up a bunch of instance variables 
     #
+    # @option opts [String] :miq_provider(noop) CHOICE: noop, local, docker
+    # @option opts [String] :export_dir relative path to the domain export from git working dir
+    # @option opts [String] :miq_import_method(partial) CHOICE partial, clean
+    #                       partial: imports only changed files
+    #                       clean: imports everything
+    # @option opts [String] :miq_priority DOES NOTHING, since the importer does not honor it
+    # @option opts [String] :branch_name name of the git branch. INFO only
     def _set_defaults(opts={})
       @miq_provider_name = opts.fetch(:miq_provider,      'noop')
       @export_dir        = opts.fetch(:export_dir,        'automate' )
@@ -21,10 +28,17 @@ module GitFlow
       @branch_name       = opts.fetch(:branch_name,       'No Branch' )
     end
 
+    # Filter changed files in this Automate domain from the list of all files
+    #
     def _limit_changeset(files)
       @changeset = files.select {|f| f.include?(@export_name)}
     end
 
+    # create a new MiqDomain Object from information on the file system
+    # @see #find_domain_files
+    #
+    # @param [Hash] dom domain information
+    # @return [GitFlow::MiqDomain] new MiqDomain object
     def self.create_from_file(dom)
       opts = {}
       opts[:export_name]   = dom[:domain_name]
@@ -38,14 +52,17 @@ module GitFlow
       self.new(new_name, opts)
     end
     
+    # NOT IN USE
+    #
     def self.create_from_config(name, opts)
       self.new(name, opts)
     end
 
-    # Represents a feature-branch
+    # Represents a Auromate Domain
     #
-    # @param [String] branch_name 
+    # @param [String] name for the imported domain
     # @option opts @see _set_defaults
+    # @option opts [String] :provider_name CHOICE: noop, local, docker
     def initialize(name, opts)
       @name = name
       _set_defaults(opts)
@@ -71,6 +88,10 @@ module GitFlow
       end
     end
 
+    # Deploys (aka import) Automate Domains to ManageIQ 
+    #
+    # @option opts [Array<String>] :changeset changed files according to git
+    # @option opts [Boolean] :skip_emtpy do not create an empty domain if changeset is empty
     def deploy(opts)
       opts[:changeset] = _limit_changeset(opts.fetch(:changeset, []))
       if opts[:skip_empty] and opts[:changeset].empty?()
@@ -80,8 +101,8 @@ module GitFlow
       prep_data = prepare_import(self, opts)
       raise GitFlow::Error, "Unknown Import method: #{prep_data[:miq_import_method]}" if prep_data[:error] == true
       @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
-      cleanup_import(prep_data)
-      raise GitFlow::Error, "Unknown Import method: #{prep_data[:miq_import_method]}" if prep_data[:error] == true
+      clean_data = cleanup_import(prep_data)
+      raise GitFlow::Error, "Error calling cleanup method: #{prep_data[:miq_import_method]}" if clean_data[:error] == true
     end
 
   end

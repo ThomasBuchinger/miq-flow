@@ -46,6 +46,8 @@ module GitFlow
     end
 
     # Deploys the feature to ManageIQ
+    # This will deploy a new Automate Domain for every Domain found on the file system, with at 
+    # least one changed file
     #
     def deploy()
       @git_repo.checkout(@git_branch)
@@ -58,7 +60,7 @@ module GitFlow
 
     end
 
-    # Finds all Domains in the Repository
+    # Searches for Automate Domain exports on the file system
     #
     def discover_domains(opts={})
       feature_level_params = {:feature_name=>@name, :branch_name => @git_branch.name, :provider=>opts[:provider], :miq_import_method=>opts[:miq_import_method]}

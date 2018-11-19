@@ -5,6 +5,11 @@ module GitFlow
     module MiqUtils
       DOMAIN_FILE_NAME = "__domain__.yaml"
 
+      # Find and read Automate domains
+      # Search PATH for __domain__.yaml files, indicating a ManageIQ Automate Domain
+      #
+      # @param [String] path path to search in
+      # @return [Array<Hash>] information about the domain
       def find_domain_files(path)
         Dir.glob(File.join(path, "**", DOMAIN_FILE_NAME)).map do |file|
           h = {}
