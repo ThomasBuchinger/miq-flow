@@ -1,69 +1,30 @@
-require 'tmpdir'
+require 'pathname'
 require 'yaml'
 module GitFlow
-  # This module contains everything needed to prepare an Automate domain for import
-  # Mostly file handling at this point
   module MiqMethods
-    def prepare_import(method, feature)
-      self.send("prepare_import_#{method}".to_sym, feature)
-    end
-    def cleanup_import(method)
-      self.send("cleanup_import_#{method}".to_sym)
-    end
-    def prepare_import_clean(feature)
-      $git_repo.workdir.chomp('/')
-    end
-    def cleanup_import_clean()
-    end
+    module MiqUtils
+      DOMAIN_FILE_NAME = "__domain__.yaml"
 
-    def prepare_import_dirty(feature)
-      base_dir = "#{$git_repo.workdir}"
-      @import_dir = File.join($tmpdir, 'import')
-
-      paths            = get_diff_paths()
-      method_data      = paths.map{|p| p.gsub(/rb$/, 'yaml') }
-      $logger.debug("Doing a dirty import of #{paths.join(', ')}")
-      all_files        = paths + method_data + _dirty_import_find_parent_files(base_dir, paths)
-      
-      fake_domain_file = _dirty_import_fake_domain(@import_dir, feature)
-      _dirty_import_copy_to_tmp(@import_dir, base_dir, all_files)
-      @import_dir
-    end
-    def cleanup_import_dirty()
-    end
-    def _dirty_import_find_parent_files(base_dir, paths)
-      parent_files = Dir.glob("#{base_dir}#{@automate_dir}/**/*").map{|f| f.gsub(base_dir, '') }.select() do |file|
-        keep = true
-        keep &= ['__namespace__.yaml', '__class__.yaml'].include?(File.basename(file))
-        keep &= paths.any?{ |p| p.start_with?(File.dirname(file)) }
-        keep 
+      # Find and read Automate domains
+      # Search PATH for __domain__.yaml files, indicating a ManageIQ Automate Domain
+      #
+      # @param [String] path path to search in
+      # @return [Array<Hash>] information about the domain
+      def find_domain_files(path)
+        Dir.glob(File.join(path, "**", DOMAIN_FILE_NAME)).map do |file|
+          h = {}
+          dir = File.dirname(file)
+          h[:full_path] = dir
+          h[:domain_name] = File.basename(dir)
+          h[:relative_path] = Pathname.new(dir).relative_path_from(Pathname.new(path)).to_s
+          h[:domain] = YAML.load_file(file)
+          $logger.debug("Found domain at: #{h[:relative_path]}")
+          h
+        end
       end
-      parent_files
-    end
-    def _dirty_import_fake_domain(import_dir, feature_name)
-      domain = {'object_type'=>'domain', 'version'=>1.0, 'object'=>{'attributes'=>{}}}
-      domain['object']['attributes']['name']         = feature_name
-      domain['object']['attributes']['description']  = "Development Branch for feature #{feature_name}: #{@git_branch.name}"
-      domain['object']['attributes']['display_name'] = nil
-      domain['object']['attributes']['priority']     = @miq_priority
-      domain['object']['attributes']['enabled']      = true
-      domain['object']['attributes']['tenant_id']    = 1 
-      domain['object']['attributes']['source']       = 'user'
-      domain['object']['attributes']['top_level_namespace'] = nil 
-      filename = File.join(import_dir, @automate_dir, @miq_fs_domain, '__domain__.yaml')
-      $logger.debug("Creating Fake domain at #{filename}")
 
-      FileUtils.mkdir_p(File.dirname(filename))
-      File.write(filename, domain.to_yaml())
     end
-    def _dirty_import_copy_to_tmp(import_dir, base_dir, all_files)
-      $logger.debug("Copy to #{import_dir} Files: #{all_files}")
-      all_files.each do |file|
-        FileUtils.mkdir_p(File.join(import_dir, File.dirname(file)))
-        FileUtils.cp(File.expand_path(file, base_dir), File.join(import_dir, file), :preserve=>true)
-      end
-      import_dir
-    end
-
   end
 end
+
+

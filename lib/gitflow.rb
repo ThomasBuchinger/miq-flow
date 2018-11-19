@@ -2,16 +2,17 @@ module GitFlow
   class Error < StandardError; end  
 
   def self.init()
+    # configure logging
+    #
+    $logger  = Logger.new(STDOUT)
+    $logger.level = $default_opts.fetch(:log_level, Logger::INFO)
+
     # prepare directories
     #
     $tmpdir = Dir.mktmpdir('miq_import_')
     Dir.mkdir(File.join($tmpdir, 'repo'))
     Dir.mkdir(File.join($tmpdir, 'import'))
-
-    # configure logging
-    #
-    $logger  = Logger.new(STDOUT)
-    $logger.level = $default_opts.fetch(:log_level, Logger::INFO)
+    $logger.debug("Using tmp directory: #{$tmpdir}")
 
     # get git repository
     #
@@ -38,7 +39,6 @@ module GitFlow
     $git_path     = ENV['GIT_PATH']     || $git_path
 
     # MIQ params
-    $default_opts[:feature_defaults][:miq_fs_domain] = ENV['EXPORT_NAME'] || ENV['MIQ_FS_DOMAIN'] || $export_name
 
     # Misc
     $default_opts[:log_level] = Logger::DEBUG if ENV['VERBOSE'] == 'true' 

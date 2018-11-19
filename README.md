@@ -26,8 +26,10 @@ DISCLAIMER: This is work-in-progress, expect things to change without warning an
 
 ## Commands
 See `./bin/cli.rb` help for details. Basic Commands are: 
+* list - lists a summary for each branch
+* inspect _BRANCH_ - show details an a given branch
+* deploy _BRANCH_ - deploys the code in a feature-branch
 * (WIP) discover - create new domains
-* deploy <branch> - deploys the code in a feature-branch
 * (WIP) sync  - deploy all branches 
 * (WIP) prune - remove feature-domains without a branch
 

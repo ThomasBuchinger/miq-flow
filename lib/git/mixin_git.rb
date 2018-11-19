@@ -4,7 +4,7 @@ module GitFlow
   # The module where all the git related stuff goes in
   module GitMethods
 
-    # This sets up the git half of a feature
+    # Sets up basic git related stuff
     # 
     # @git_base: The baseline Rugged::Commit to diff against
     # @git_branch: Rugged::Branch of origin/<branch> 
@@ -49,7 +49,7 @@ module GitFlow
     # Get a list of changed files 
     #
     # @param [Rugged::Commit, Rugged::Branch] base defaults to @git_base
-    # @param [Rugged::Commit, Rugged::Branch] base defaults to @git_branch
+    # @param [Rugged::Commit, Rugged::Branch] head defaults to @git_branch
     # @return [Array<String>] A list of changed paths
     def get_diff_paths(base=nil, head=nil)
       base = base || @git_base
@@ -68,6 +68,18 @@ module GitFlow
         paths << delta.new_file[:path]
       end
       paths
+    end
+
+    # Get a list of existing remote branches, matching any prefix
+    #
+    # @param [Array<String>] prefix limit returned list to these prefixes
+    # @param [String] git remote name used to construct branch name. default: origin
+    # @return [Rugged::Branch] all remote pranches starting with prefix
+    def self.get_remote_branches(prefix=nil, remote=nil, repo=nil)
+      prefixes    = prefix || @prefix || ['feature', 'fix', 'master']
+      remote_name = remote || @remote || 'origin'
+      repo        = @git_repo || $git_repo
+      repo.branches.each(:remote).select{|remote_branch| prefixes.any?{|prefix| remote_branch.name.match("#{remote_name}/#{prefix}")  } }
     end
 
   end
