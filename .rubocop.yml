@@ -1,7 +1,7 @@
 ---
 Style/GlobalVars:
   AllowedVariables: [ $logger, $default_opts, $git_repo, $tmpdir, $git_path,$git_url, $git_user, $git_password ]
-Style/LineLength:
+Metrics/LineLength:
   Max: 120
 Metrics/MethodLength:
   Max: 50
