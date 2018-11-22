@@ -14,7 +14,7 @@ require 'domain.rb'
 require 'feature.rb'
 require 'gitflow.rb'
 
-$default_opts = { :clear_tmp => true }
+$default_opts = { clear_tmp: true }
 $default_opts[:miq] = {}
 $default_opts[:git_opts] = {}
 require_relative '../custom.rb' if File.file?(File.expand_path(File.join(lib_dir, '..', 'custom.rb')))

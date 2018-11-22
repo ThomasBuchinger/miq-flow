@@ -2,8 +2,9 @@ require 'pathname'
 require 'yaml'
 module GitFlow
   module MiqMethods
+    # ManageIQ related Methods, that are not plugable
     module MiqUtils
-      DOMAIN_FILE_NAME = "__domain__.yaml"
+      DOMAIN_FILE_NAME = '__domain__.yaml'.freeze
 
       # Find and read Automate domains
       # Search PATH for __domain__.yaml files, indicating a ManageIQ Automate Domain
@@ -11,7 +12,7 @@ module GitFlow
       # @param [String] path path to search in
       # @return [Array<Hash>] information about the domain
       def find_domain_files(path)
-        Dir.glob(File.join(path, "**", DOMAIN_FILE_NAME)).map do |file|
+        Dir.glob(File.join(path, '**', DOMAIN_FILE_NAME)).map do |file|
           h = {}
           dir = File.dirname(file)
           h[:full_path] = dir
@@ -22,9 +23,6 @@ module GitFlow
           h
         end
       end
-
     end
   end
 end
-
-
