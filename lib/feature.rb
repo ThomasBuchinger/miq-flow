@@ -14,80 +14,82 @@ module GitFlow
     attr_accessor :miq_domain
     attr_reader   :git_repo
 
-    # Sets up a bunch of instance variables 
+    # Sets up a bunch of instance variables
     #
     # @option opts [String] :remote_name('origin')
     # @option opts [String] :base('master')
     # @option opts [Array<String>]        :prefix(feature, fix)
-    def _set_defaults(opts={})
+    def _set_defaults(opts = {})
       @remote_name       = opts.fetch(:remote_name,       'origin')
       @base              = opts.fetch(:base,              'master')
-      @prefixes          = opts.fetch(:prefix,            ['feature', 'fix'] )
+      @prefixes          = opts.fetch(:prefix,            %w[feature fix])
     end
 
-
-    
     # Represents a feature-branch
     #
-    # @param [String] branch_name 
+    # @param [String] branch_name
     # @option opts @see _set_defaults
-    def initialize(branch_name, opts={})
+    def initialize(branch_name, opts = {})
       _set_defaults(opts)
       @name = opts.fetch(:feature_name, branch_name.split(/-/)[2]) || branch_name
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
 
-      @git_repo  = opts.fetch(:git_repo, nil) || $git_repo
+      @git_repo = opts.fetch(:git_repo, nil) || $git_repo
       raise GitFlow::Error, 'Unable to find git repo' if @git_repo.nil?()
+
       _create_git(branch_name, @git_repo)
 
       method   = opts.fetch(:miq_import_method, 'partial')
       provider = opts.fetch(:provider,          'default')
-      @miq_domain  = discover_domains(provider: provider, miq_import_method: method)
+      @miq_domain = discover_domains(provider: provider, miq_import_method: method)
     end
 
     # Deploys the feature to ManageIQ
-    # This will deploy a new Automate Domain for every Domain found on the file system, with at 
+    # This will deploy a new Automate Domain for every Domain found on the file system, with at
     # least one changed file
     #
-    def deploy()
+    def deploy
       @git_repo.checkout(@git_branch)
-      meth = @miq_import_method
-      deploy_opts = {:changeset=>get_diff_paths(), :git_workdir=>@git_repo.workdir, :skip_empty=>[:partial].include?(meth), :miq_import_method=>meth}
+      paths = get_diff_paths()
+      deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir }
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")
         domain.deploy(deploy_opts)
-      end 
-
+      end
     end
 
     # Searches for Automate Domain exports on the file system
     #
-    def discover_domains(opts={})
-      feature_level_params = {:feature_name=>@name, :branch_name => @git_branch.name, :provider=>opts[:provider], :miq_import_method=>opts[:miq_import_method]}
+    def discover_domains(opts = {})
+      feature_level_params = {}
+      feature_level_params[:feature_name] = @name
+      feature_level_params[:branch_name]  = @git_branch.name
+      feature_level_params[:provider]     = opts[:provider]
+      feature_level_params[:miq_import_method] = opts[:miq_import_method]
       domains = find_domain_files(@git_repo.workdir)
-      domains.map{|dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params))}
+      domains.map{ |dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params)) }
     end
 
-    def show_details()
+    def show_details # rubocop:disable Metrics/AbcSize
       commit = @git_base
       paths  = get_diff_paths()
       ret = []
       ret << "Feature: #{@name} on branch #{@git_branch.name} "
       ret << " Branch: #{@git_branch.target.tree_id}: #{@git_branch.target.summary}"
       ret << "   Base: #{commit.tree_id}: #{commit.summary}"
-      ret << ""
-      @miq_domain.each do|dom|
+      ret << ''
+      @miq_domain.each do |dom|
         ret << dom.name
-        dom._limit_changeset(paths).each{|path| ret << "  #{path}" }
+        dom._limit_changeset(paths).each{ |path| ret << "  #{path}" }
       end
-      return ret.join("\n")
-    end
-    def show_summary()
-      paths  = get_diff_paths()
-      domain_info = @miq_domain.map{|dom| {:name=>dom.name, :change_num=>dom._limit_changeset(paths).length}}
-      domain_string = domain_info.map{|d| "#{d[:name]}: #{d[:change_num]}"}.join(' ')
-      return "#{@git_branch.name}: #{domain_string}"
+      ret.join("\n")
     end
 
+    def show_summary
+      paths = get_diff_paths()
+      domain_info   = @miq_domain.map{ |dom| { name: dom.name, change_num: dom._limit_changeset(paths).length } }
+      domain_string = domain_info.map{ |d| "#{d[:name]}: #{d[:change_num]}" }.join(' ')
+      "#{@git_branch.name}: #{domain_string}"
+    end
   end
 end
