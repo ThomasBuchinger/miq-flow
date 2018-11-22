@@ -1,0 +1,4 @@
+language: ruby
+rvm:
+  - 2.3 # Gaprindashvili
+  - 2.4 # Hammer
