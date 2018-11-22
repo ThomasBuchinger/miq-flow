@@ -1,0 +1,24 @@
+---
+Style/GlobalVars:
+  AllowedVariables: [ $logger, $default_opts, $git_repo, $tmpdir, $git_path,$git_url, $git_user, $git_password ]
+Style/LineLength:
+  Max: 120
+Metrics/MethodLength:
+  Max: 50
+
+Layout/SpaceBeforeBlockBraces:
+  EnforcedStyle: no_space
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: false
+Style/ClassCheck:
+  EnforcedStyle: kind_of?
+
+Style/RedundantSelf:
+  Exclude:
+    - lib/domain.rb
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - lib/gitflow.rb
+Metrics/PerceivedComplexity:
+  Exclude:
+    - lib/gitflow.rb
