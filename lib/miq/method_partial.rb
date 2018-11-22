@@ -19,6 +19,7 @@ module GitFlow
       { :import_dir => import_dir }
     end
     def cleanup_import_partial()
+      {}
     end
 
     module Partial

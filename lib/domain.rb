@@ -42,7 +42,7 @@ module GitFlow
     def self.create_from_file(dom)
       opts = {}
       opts[:export_name]   = dom[:domain_name]
-      opts[:export_dir]    = dom[:relative_path]
+      opts[:export_dir]    = File.dirname(dom[:relative_path])
       opts[:import_method] = dom[:import_method] 
       opts[:provider_name] = dom[:provider]
       opts[:branch_name]   = dom[:branch_name]
