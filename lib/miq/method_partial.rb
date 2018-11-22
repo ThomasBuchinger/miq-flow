@@ -42,10 +42,10 @@ module GitFlow
       def self.generate_domain_template(domain_name, branch_name, priority, tenant)
         attributes = { display_name: nil, enabled: true, source: 'user', top_level_namespace: nil }
         domain = { object_type: 'domain', version: 1.0, object: { attributes: attributes } }
-        domain['object']['attributes']['name']         = domain_name
-        domain['object']['attributes']['description']  = "Development Branch for feature #{domain_name}: #{branch_name}"
-        domain['object']['attributes']['priority']     = priority
-        domain['object']['attributes']['tenant_id']    = tenant
+        domain[:object][:attributes][:name]        = domain_name
+        domain[:object][:attributes][:description] = "Development Branch for feature #{domain_name}: #{branch_name}"
+        domain[:object][:attributes][:priority]    = priority
+        domain[:object][:attributes][:tenant_id]   = tenant
         domain
       end
 
