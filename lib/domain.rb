@@ -87,7 +87,8 @@ module GitFlow
     end
 
     def skip_deploy?(opts)
-      skip = opts[:skip_empty] && opts[:changeset].empty?()
+      skippable_method = [:partial].include?(@miq_import_method)
+      skip = skippable_method && opts[:changeset].empty?()
       $logger.info("Skipping Domain: #{@name}: empty") if skip
       skip
     end

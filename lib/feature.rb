@@ -50,10 +50,8 @@ module GitFlow
     #
     def deploy
       @git_repo.checkout(@git_branch)
-      meth  = @miq_import_method
-      skip  = [:partial].include?(meth)
       paths = get_diff_paths()
-      deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir, skip_empty: skip, miq_import_method: meth }
+      deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir }
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")
         domain.deploy(deploy_opts)
