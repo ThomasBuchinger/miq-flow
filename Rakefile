@@ -3,6 +3,8 @@ require 'rubocop/rake_task'
 RuboCop::RakeTask.new
 
 desc 'Run everything test related'
-task test: :rubocop
+task travis: :rubocop
 
-task default: :test
+task :default do
+  puts 'There are not test yet. Sorry'
+end
