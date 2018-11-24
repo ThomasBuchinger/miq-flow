@@ -7,7 +7,7 @@ bundle exec ./bin/cli.rb deploy feature-1-f1 --provider docker
 echo "=== Docker PS ======================================================================"
 docker ps
 echo "=== Docker Logs ===================================================================="
-docker logs manageiq
+docker logs --tail 100 manageiq
 echo "===================================================================================="
 RESPONSE=$(curl -k --user admin:smartvm "https://localhost:8443/api/automate/${DOMAIN}?depth=-1&attributes=klass,domain_fnname")
 echo "==== Response ======================================================================"
