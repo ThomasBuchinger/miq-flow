@@ -21,6 +21,9 @@ before_install:
   - echo '$git_url = "https://github.com/ThomasBuchinger/automate-example.git"' > custom.rb
 script:
   - bundle install
+  - cat custom.rb
+  - bundle exec ./bin/cli.rb list
+  - bundle exec ./bin/cli.rb inspect feature-1-f1
   - bundle exec ./bin/cli.rb deploy feature-1-f1 --provider docker
   - ./script/verify_import.sh
   - bundle exec rake travis
