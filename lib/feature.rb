@@ -54,7 +54,7 @@ module GitFlow
       deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir }
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")
-        domain.deploy(deploy_opts)
+        domain.deploy(deploy_opts.dup)
       end
     end
 
