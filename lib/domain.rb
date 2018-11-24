@@ -32,10 +32,7 @@ module GitFlow
     # Filter changed files in this Automate domain from the list of all files
     #
     def _limit_changeset(files)
-      @changeset = files.select{ |f| 
-        $logger.warn("TRAVIS in limit: #{@export_name} included in #{f}")
-        f.include?(@export_name) 
-      }
+      @changeset = files.select{ |f| f.include?(@export_name) }
     end
 
     # create a new MiqDomain Object from information on the file system
@@ -101,9 +98,7 @@ module GitFlow
     # @option opts [Array<String>] :changeset changed files according to git
     # @option opts [Boolean] :skip_emtpy do not create an empty domain if changeset is empty
     def deploy(opts)
-      $logger.warn("TRAVIS: method=#{@miq_import_method} changeset=#{opts[:changeset]}")
       opts[:changeset] = _limit_changeset(opts.fetch(:changeset, []))
-      $logger.warn("TRAVIS: method=#{@miq_import_method} changeset=#{opts[:changeset]}")
       return if skip_deploy?(opts)
 
       prep_data = prepare_import(self, opts)

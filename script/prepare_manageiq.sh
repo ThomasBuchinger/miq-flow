@@ -9,7 +9,7 @@ docker pull manageiq/manageiq:$TAG
 
 docker run --name $CONTAINER_NAME --privileged -d -p 8443:443 manageiq/manageiq:$TAG
 
-sleep 180
+sleep 150
 for i in 1..20
 do
   curl -k --user admin:smartvm -o /dev/null https://localhost:8443/api/servers/1
