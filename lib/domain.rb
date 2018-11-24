@@ -32,7 +32,10 @@ module GitFlow
     # Filter changed files in this Automate domain from the list of all files
     #
     def _limit_changeset(files)
-      @changeset = files.select{ |f| f.include?(@export_name) }
+      @changeset = files.select{ |f| 
+        $ligger.warn("TRAVIS in limit: #{@export_name} includes #{f}")
+        f.include?(@export_name) 
+      }
     end
 
     # create a new MiqDomain Object from information on the file system

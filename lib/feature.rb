@@ -51,7 +51,6 @@ module GitFlow
     def deploy
       @git_repo.checkout(@git_branch)
       paths = get_diff_paths()
-      $logger.warn("TRAVIS in feature:paths=#{paths}")
       deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir }
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")

@@ -68,7 +68,6 @@ module GitFlow
       paths = []
       diff = base_commit.diff(head_commit)
       diff.each_delta do |delta|
-        $logger.warn("TRAVIS in git: found delta: #{delta.status}")
         next if delta.deleted?()
 
         paths << delta.new_file[:path]
