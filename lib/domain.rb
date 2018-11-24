@@ -98,6 +98,7 @@ module GitFlow
     # @option opts [Array<String>] :changeset changed files according to git
     # @option opts [Boolean] :skip_emtpy do not create an empty domain if changeset is empty
     def deploy(opts)
+      $logger.warn("TRAVIS: method=#{@miq_import_method} changeset=#{opts[:changeset]}")
       opts[:changeset] = _limit_changeset(opts.fetch(:changeset, []))
       $logger.warn("TRAVIS: method=#{@miq_import_method} changeset=#{opts[:changeset]}")
       return if skip_deploy?(opts)
