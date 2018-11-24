@@ -2,7 +2,16 @@
 DOMAIN=${DOMAIN-feature_f1_buc}
 SUITE=${SUITE-default}
 if [[ $SUITE != "integration" ]]; then exit 0; fi
+
+bundle exec ./bin/cli.rb devel1 
+echo "===================================================================================="
+bundle exec ./bin/cli.rb list
+echo "===================================================================================="
+bundle exec ./bin/cli.rb inspect feature-1-f1
+echo "===================================================================================="
 bundle exec ./bin/cli.rb deploy feature-1-f1 --provider docker
+echo "===================================================================================="
+
 
 echo "=== Docker PS ======================================================================"
 docker ps

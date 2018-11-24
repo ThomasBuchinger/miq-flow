@@ -33,7 +33,7 @@ module GitFlow
     #
     def _limit_changeset(files)
       @changeset = files.select{ |f| 
-        $ligger.warn("TRAVIS in limit: #{@export_name} includes #{f}")
+        $logger.warn("TRAVIS in limit: #{@export_name} included in #{f}")
         f.include?(@export_name) 
       }
     end
