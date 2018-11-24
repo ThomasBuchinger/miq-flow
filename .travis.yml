@@ -6,18 +6,20 @@ rvm:
   - 2.3 # Gaprindashvili
   - 2.4 # Hammer
 env:
-  - TAG_NAME=hammer-1-rc1
-  - TAG_NAME=latest-gaprindashvili
+  - TAG=hammer-1-rc1
+  - TAG=latest-gaprindashvili
 matrix:
   exclude:
     - rvm: 2.4
-      env: TAG_NAME=latest-gaprindashvili
+      env: TAG=latest-gaprindashvili
     - rvm: 2.3
-      env: TAG_NAME=hammer-1-rc1
+      env: TAG=hammer-1-rc1
 
 before_install:
+  - docker pull "manageiq/manageiq:$TAG"
   - script/prepare_manageiq.sh
-script:
   - echo '$git_url = "https://github.com/ThomasBuchinger/automate-example.git"' > custom.rb
-  - ./bin/cli.rb deploy feature-1-f1
+script:
+  - bundle install
+  - bundle exec ./bin/cli.rb deploy feature-1-f1
   - ./script/verify_import.sh
