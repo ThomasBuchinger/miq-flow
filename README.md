@@ -1,4 +1,6 @@
 # ManageIQ Automate GitFlow Importer
+[![Build Status](https://travis-ci.org/ThomasBuchinger/automate-gitflow.svg?branch=master)](https://travis-ci.org/ThomasBuchinger/automate-gitflow)
+
 This command line utility implements a git-based branching workflow (GitFlow) on top of the default ManageIQ Automate Import/Export Scripts.
 
 Automation Engine is ManageIQ's way to integrate IT infrastructure into the wider Enterprise (e.g. CMDB, change management, billing, ...). 
