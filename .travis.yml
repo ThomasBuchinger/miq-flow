@@ -16,8 +16,6 @@ matrix:
 
 before_install:
   - script/prepare_manageiq.sh
-  - echo "\$git_url = 'https://github.com/ThomasBuchinger/automate-example.git'" > custom.rb
-  - echo "\$default_opts[:log_level] = Logger::DEBUG" >> custom.rb
   - bundle install
 script:
   - bundle exec ./bin/cli.rb list
