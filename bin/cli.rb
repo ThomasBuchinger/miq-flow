@@ -5,6 +5,11 @@ require_relative '../lib/bootstrap.rb'
 module GitFlow
   # Implements the CLI interface
   class Cli < Thor
+    class_option :verbose, type: :boolean, desc: 'Turn on verbose logging'
+    class_option :quiet, type: :boolean, desc: 'Only show errors and warnings'
+    class_option :cleanup, type: :boolean, desc: 'Clean up the working dir before exiting'
+    class_option :workdir, type: :string, desc: 'Override the working directory'
+
     desc 'list', 'List Feature branches'
     def list
       GitFlow.init()
@@ -22,20 +27,19 @@ module GitFlow
       puts text
     end
 
-    desc 'deploy NAME', 'Deploy a Feature Branch'
-    option :domain, desc: 'specify the automate domain to use (default: 3rd segment of NAME, seperted by \'-\')'
-    option :export_name, desc: 'name of the domain on the filesystem', alias: 'miq_fs_domain'
+    desc 'deploy BRANCH', 'Deploy a Feature Branch'
+    option :name, desc: 'specify domain identifier (default: 3rd segment of NAME, separated by \'-\')'
     option :priority, type: :numeric
     option :provider, desc: 'How to talk to ManageIQ (default: noop)'
-    def deploy(name)
+    def deploy(branch)
       GitFlow.init()
-      miq_domain = options[:domain] || name.split(/-/)[2] || name
+      miq_domain = options[:name] || branch.split(/-/)[2] || branch
       provider   = options.fetch(:provider, 'default')
       prio       = options[:miq_priority]
 
       opts = { feature_name: miq_domain, provider: provider }
       opts[:miq_priotiry] = prio
-      feature = GitFlow::Feature.new(name, opts)
+      feature = GitFlow::Feature.new(branch, opts)
       feature.deploy()
       GitFlow.tear_down()
     end

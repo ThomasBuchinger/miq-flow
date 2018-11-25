@@ -70,7 +70,7 @@ module GitFlow
       domains.map{ |dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params)) }
     end
 
-    def show_details # rubocop:disable Metrics/AbcSize
+    def show_details
       commit = @git_base
       paths  = get_diff_paths()
       ret = []

@@ -19,8 +19,9 @@ automate-gitflow uses the diff information in git to create partial domains, whi
 
 # How do I use it?
 DISCLAIMER: This is work-in-progress, expect things to change without warning and the occasional stack trace.
-* Clone the repository onto your ManageIQ Appliance 
-* Rename `example_custom.rb` to `custom.rb`. You have to configure at least `$git_url`/`$git_path` and `$export_name` 
+* Clone the repository onto your ManageIQ Appliance
+* Make sure you have [Rugged](https://github.com/libgit2/rugged) and [Thor](https://github.com/erikhuda/thor) installed (it is on the ManageIQ Appliances) by running `bundle install`.
+* Open `config.yml` file and make sure you configure `git.url`
 * Run `./bin/cli.rb` with the correct `--provider` option:
   * `local`: This provider assumes running on a ManageIQ Appliance and uses the Rake Tasks of ManageIQ
   * `noop`: Preview what the scrpit would do, without modifying ManageIQ
@@ -36,6 +37,4 @@ See `./bin/cli.rb` help for details. Basic Commands are:
 * (WIP) prune - remove feature-domains without a branch
 
 ## Notes
-* Make sure you have [Rugged](https://github.com/libgit2/rugged) and [Thor](https://github.com/erikhuda/thor) installed (it is on the ManageIQ Appliances)
 * automate-gitflow may checkout a different branch, when used with a local repository
-* deploying multiple domains per feature-branch is not yet supported
