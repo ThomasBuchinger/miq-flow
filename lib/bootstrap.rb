@@ -24,5 +24,4 @@ GitFlow::Settings.set_defaults()
   GitFlow::Settings.process_config_file(file)
 end
 GitFlow::Settings.process_environment_variables()
-$settings.freeze()
 GitFlow.validate() ? true : exit(1)

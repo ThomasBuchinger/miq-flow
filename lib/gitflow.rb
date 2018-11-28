@@ -3,7 +3,8 @@ module GitFlow
   include GitFlow::Settings
   Error = Class.new(StandardError)
 
-  def self.init
+  def self.init(config_path)
+    GitFlow::Settings.process_config_file(config_path)
     $logger.debug("Using Settings: #{$settings.to_yaml}")
 
     # prepare directories
