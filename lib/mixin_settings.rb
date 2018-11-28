@@ -23,7 +23,7 @@ module GitFlow
     end
 
     def self.process_config_file(path)
-      return unless File.file?(path)
+      return unless path.kind_of?(String) && File.file?(path)
 
       $logger.info("Processing config file: #{path}")
       conf = YAML.load_file(path)
