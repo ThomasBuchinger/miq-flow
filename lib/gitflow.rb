@@ -3,7 +3,7 @@ module GitFlow
   include GitFlow::Settings
   Error = Class.new(StandardError)
 
-  def self.init()
+  def self.init
     $logger.debug("Using Settings: #{$settings.to_yaml}")
 
     # prepare directories
@@ -19,7 +19,11 @@ module GitFlow
   end
 
   def self.tear_down
-    FileUtils.rm_rf($tmpdir) if $settings[:clear_tmp]
+    return unless $settings[:clear_tmp]
+
+    FileUtils.rm_rf(File.join($tmpdir, 'import'))
+    FileUtils.rm_rf(File.join($tmpdir, 'repo'))
+    FileUtils.rmdir($tmpdir) if Dir["#{$tmpdir}/*"].empty?
   end
 
   def self.validate

@@ -8,12 +8,11 @@ module GitFlow
     class_option :verbose, type: :boolean, desc: 'Turn on verbose logging'
     class_option :quiet, type: :boolean, desc: 'Only show errors and warnings'
     class_option :cleanup, type: :boolean, desc: 'Clean up the working dir before exiting'
-#    class_option :workdir, type: :string, desc: 'Override the working directory'
+    class_option :workdir, type: :string, desc: 'Override the working directory'
     class_option :config, type: :string, alias: '-c', desc: 'Specify config file to load'
 
     no_commands do
-      def cli_setup()
-        $logger.warn("in CLI Setup: #{options}")
+      def cli_setup
         GitFlow::Settings.process_config_file(options['config'])
         GitFlow::Settings.update_log_level(:debug) if options['verbose'] == true
         GitFlow::Settings.update_log_level(:warn)  if options['quiet'] == true

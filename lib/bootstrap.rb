@@ -29,7 +29,7 @@ SEARCHPATH = [
   File.expand_path('~/.gitflow.yaml'),
   File.expand_path('~/.gitflow/config.yml'),
   File.expand_path('~/.gitflow/config.yaml')
-  ]
+].freeze
 SEARCHPATH.each do |file|
   GitFlow::Settings.process_config_file(file)
 end
