@@ -2,13 +2,13 @@
 # Set logging level
 # Default: info
 # Possible values: debug, info, warn, error, fatal
-log_level: debug
+# log_level: info
 
-git:
+# git:
   # Configures a remote git repository as source
   # The repository will be (re)cloned with every invocation
   # Please note, that only HTTPS URLs are allowed on ManageIQ Appliances
-  url: "https://github.com/ThomasBuchinger/automate-example"
+  # url: "https://github.com/ThomasBuchinger/automate-example"
 
   # Configures a local repository as source
   # A local repository may be used if the repository is large or
