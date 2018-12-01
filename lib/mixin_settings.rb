@@ -26,7 +26,7 @@ module GitFlow
       return unless path.kind_of?(String) && File.file?(path)
 
       $logger.info("Processing config file: #{path}")
-      conf = YAML.load_file(path)
+      conf = YAML.load_file(path) || {}
       git_conf = conf['git'] || {}
       update_log_level(conf['log_level'])
       update_clear_tmp(conf['clear_tmp'])
@@ -55,7 +55,7 @@ module GitFlow
     end
 
     def self.update_clear_tmp(clear_flag)
-      return if truthy(clear_flag) || falsey(clear_flag)
+      return unless truthy(clear_flag) || falsey(clear_flag)
 
       $settings[:clear_tmp] = truthy(clear_flag)
     end
@@ -68,7 +68,9 @@ module GitFlow
     end
 
     def self.update_workdir(dir)
-      return if dir != 'auto' || File.directory?(dir)
+      return if dir.nil?
+
+      return if dir != 'auto' && !File.directory?(dir)
 
       $settings[:workdir] = dir
     end
