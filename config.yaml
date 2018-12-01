@@ -1,0 +1,34 @@
+---
+# Set logging level
+# Default: info
+# Possible values: debug, info, warn, error, fatal
+# log_level: info
+
+# git:
+  # Configures a remote git repository as source
+  # The repository will be (re)cloned with every invocation
+  # Please note, that only HTTPS URLs are allowed on ManageIQ Appliances
+  # url: "https://github.com/ThomasBuchinger/automate-example"
+
+  # Configures a local repository as source
+  # A local repository may be used if the repository is large or
+  # has to be access via SSH
+  # path: "/path/to/your/automate-repository"
+
+
+  #  Specify credentials for the repository.
+  #  NOTE: only HTTP Authenication is supported
+  #  user: someone
+  #  password: <TOKEN>
+
+# Clear the temporay working directory after we are finished
+# Disabling it, is only useful for debugging
+# Default: yes
+# Possible Values: yes, no
+# clear_tmp: yes
+
+# Sets the working directory
+#   auto: generates a new temporary directory. Sets clear_tmp to yes
+#   PATH: use existing directory. Sets clear_tmp to no
+# Possible values: PATH, auto
+# workdir: 'auto'
