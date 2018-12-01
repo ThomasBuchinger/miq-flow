@@ -17,6 +17,7 @@ matrix:
 before_install:
   - script/prepare_manageiq.sh
   - bundle install
+  - ruby -ryaml -e "c={'log_level'=>'debug', 'git'=>{'url'=>'https://github.com/ThomasBuchinger/automate-example'}}; puts c.to_yaml"
 script:
   - bundle exec ./bin/cli.rb list
   - bundle exec ./bin/cli.rb inspect feature-1-f1
