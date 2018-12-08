@@ -4,7 +4,7 @@ module GitFlow
     class Appliance
       attr_accessor :container_name
 
-      def initialize(opts = {}) end
+      def initialize(opts={}) end
 
       def import(tmpdir, fs_domain, miq_domain)
         commands = [

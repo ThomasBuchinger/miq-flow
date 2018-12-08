@@ -64,7 +64,7 @@ module GitFlow
     # @param [String] oid1
     # @param [String] oid2 defaults to @base => 'master'
     # @return [Rugged::Commit, nil]
-    def merge_base(repo, oid1, oid2 = nil)
+    def merge_base(repo, oid1, oid2=nil)
       oid2 = oid2 || @base || 'master'
 
       base = repo.merge_base(oid1, oid2)
@@ -76,7 +76,7 @@ module GitFlow
     # @param [Rugged::Commit, Rugged::Branch] base defaults to @git_base
     # @param [Rugged::Commit, Rugged::Branch] head defaults to @git_branch
     # @return [Array<String>] A list of changed paths
-    def get_diff_paths(base = nil, head = nil)
+    def get_diff_paths(base=nil, head=nil)
       base ||= @git_base
       head ||= @git_branch
 
@@ -105,7 +105,7 @@ module GitFlow
     # @param [Array<String>] prefix limit returned list to these prefixes
     # @param [String] git remote name used to construct branch name. default: origin
     # @return [Rugged::Branch] all remote pranches starting with prefix
-    def self.get_remote_branches(prefixes = nil, remote = nil)
+    def self.get_remote_branches(prefixes=nil, remote=nil)
       prefixes    = prefixes || @prefix || %w[feature fix master]
       remote_name = remote || @remote || 'origin'
       repo        = @git_repo || $git_repo

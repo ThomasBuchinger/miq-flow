@@ -18,7 +18,7 @@ module GitFlow
     # @option opts [String] :remote_name('origin')
     # @option opts [String] :base('master')
     # @option opts [Array<String>]        :prefix(feature, fix)
-    def _set_defaults(opts = {})
+    def _set_defaults(opts={})
       @remote_name       = opts.fetch(:remote_name, 'origin')
       @base              = opts.fetch(:base,        'master')
       @prefixes          = opts.fetch(:prefix,      %w[feature fix])
@@ -28,7 +28,7 @@ module GitFlow
     #
     # @param [String] branch_name
     # @option opts @see _set_defaults
-    def initialize(branch_name, opts = {})
+    def initialize(branch_name, opts={})
       _set_defaults(opts)
       @name = opts.fetch(:feature_name, branch_name.split(/-/)[2]) || branch_name
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
@@ -59,7 +59,7 @@ module GitFlow
 
     # Searches for Automate Domain exports on the file system
     #
-    def discover_domains(opts = {})
+    def discover_domains(opts={})
       feature_level_params = {}
       feature_level_params[:feature_name] = @name
       feature_level_params[:branch_name]  = @git_branch.name

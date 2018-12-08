@@ -20,7 +20,7 @@ module GitFlow
     #                       clean: imports everything
     # @option opts [String] :miq_priority DOES NOTHING, since the importer does not honor it
     # @option opts [String] :branch_name name of the git branch. INFO only
-    def _set_defaults(opts = {})
+    def _set_defaults(opts={})
       @miq_provider_name = opts.fetch(:miq_provider,      'noop')
       @export_dir        = opts.fetch(:export_dir,        'automate')
       @export_name       = opts.fetch(:export_name,       @name)

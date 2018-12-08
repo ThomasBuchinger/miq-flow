@@ -10,6 +10,8 @@ Metrics/AbcSize:
 
 Layout/SpaceBeforeBlockBraces:
   EnforcedStyle: no_space
+Layout/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
 Style/MethodCallWithoutArgsParentheses:
   Enabled: false
 Style/ClassCheck:
