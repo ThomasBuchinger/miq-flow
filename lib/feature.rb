@@ -1,5 +1,4 @@
 require 'pathname'
-require_relative 'git/mixin_git.rb'
 require_relative 'domain.rb'
 
 module GitFlow
@@ -20,9 +19,9 @@ module GitFlow
     # @option opts [String] :base('master')
     # @option opts [Array<String>]        :prefix(feature, fix)
     def _set_defaults(opts = {})
-      @remote_name       = opts.fetch(:remote_name,       'origin')
-      @base              = opts.fetch(:base,              'master')
-      @prefixes          = opts.fetch(:prefix,            %w[feature fix])
+      @remote_name       = opts.fetch(:remote_name, 'origin')
+      @base              = opts.fetch(:base,        'master')
+      @prefixes          = opts.fetch(:prefix,      %w[feature fix])
     end
 
     # Represents a feature-branch

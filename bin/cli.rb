@@ -20,6 +20,7 @@ module GitFlow
         GitFlow::Settings.update_workdir(options['workdir'])
 
         GitFlow.init()
+        GitFlow.prepare_repo()
       end
     end
 
@@ -57,6 +58,12 @@ module GitFlow
       feature = GitFlow::Feature.new(branch, opts)
       feature.deploy()
       GitFlow.tear_down()
+    end
+
+    desc 'discover', 'Discover ManageIQ Automate Domains'
+    def discover
+      provider = GitFlow::ApiMethods
+      provider.list_domains
     end
 
     desc 'devel1', 'Development NOOP command'
