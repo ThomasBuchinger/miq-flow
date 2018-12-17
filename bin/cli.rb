@@ -62,8 +62,8 @@ module GitFlow
 
     desc 'discover', 'Discover ManageIQ Automate Domains'
     def discover
-      provider = GitFlow::ApiMethods
-      provider.list_domains
+      api = GitFlow::ManageIQ.new
+      puts api.list_domains
     end
 
     desc 'devel1', 'Development NOOP command'

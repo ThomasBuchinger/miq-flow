@@ -2,6 +2,7 @@ require 'rugged'
 require 'tmpdir'
 require 'logger'
 require 'yaml'
+require 'time'
 
 lib_dir = __dir__
 $LOAD_PATH << lib_dir
@@ -14,6 +15,7 @@ require 'miq/mixin_miq.rb'
 require 'mixin_git.rb'
 require 'mixin_api.rb'
 require 'mixin_settings.rb'
+require 'manageiq.rb'
 require 'domain.rb'
 require 'feature.rb'
 require 'gitflow.rb'

@@ -2,7 +2,6 @@
 module GitFlow
   include GitFlow::Settings
   include GitMethods
-  include ApiMethods
   Error = Class.new(StandardError)
 
   def self.init
@@ -36,5 +35,20 @@ module GitFlow
       valid = false
     end
     valid != false
+  end
+
+  def self.human_readable_time(timestamp: , now: Time.now)
+    uptime = (now - timestamp).to_i
+    case uptime
+    when 0 then 'just now'
+    when 1 then 'uptime second ago'
+    when 2..59 then uptime.to_s + ' seconds ago'
+    when 60..119 then 'uptime minute ago' # 120 = 2 minutes
+    when 120..3540 then (uptime / 60).to_i.to_s + ' minutes ago'
+    when 3541..7100 then 'an hour ago' # 3600 = 1 hour
+    when 7101..82_800 then ((uptime + 99) / 3600).to_i.to_s + ' hours ago'
+    when 82_801..172_000 then 'uptime day ago' # 86400 = 1 day
+    else ((uptime + 800) / 86_400).to_i.to_s + ' days ago'
+    end
   end
 end

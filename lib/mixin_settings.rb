@@ -8,6 +8,8 @@ module GitFlow
       update_log_level(:info)
       update_clear_tmp('yes')
       update_workdir('auto')
+
+      update_miq_api(nil, 'admin', 'smartvm')
     end
 
     def self.process_environment_variables
@@ -15,6 +17,7 @@ module GitFlow
       update_git(ENV['GIT_URL'], ENV['GIT_PATH'], ENV['GIT_USER'], ENV['GIT_PASSWORD'])
 
       # MIQ params
+      update_miq_api(ENV['MIQ_URL'], ENV['MIQ_USER'], ENV['MIQ_PASSWORD'])
 
       # Misc
       update_log_level(:debug) if truthy(ENV.fetch('VERBOSE', 'no'))
@@ -74,6 +77,13 @@ module GitFlow
 
       $settings[:workdir] = dir
     end
+
+    def self.update_miq_api(url, user, password)
+      $settings[:miq][:url]      = url unless url.nil?
+      $settings[:miq][:user]     = user unless user.nil?
+      $settings[:miq][:password] = password unless password.nil?
+    end
+
 
     def self.truthy(value)
       true_values = %w[true TRUE True yes YES Yes t T y Y 1]
