@@ -9,18 +9,19 @@ matrix:
       env: TAG=latest-gaprindashvili
     - name: "Hammer"
       rvm: 2.4
-      env: TAG=hammer-1-rc1
+      env: TAG=hammer-1-rc2
     - name: "Hammer + Integration"
       rvm: 2.4
-      env: TAG=hammer-1-rc1 SUITE=integration
+      env: TAG=hammer-1-rc2 SUITE=integration
 
 before_install:
   - script/prepare_manageiq.sh
   - bundle install
   - ruby -ryaml -e "c={'log_level'=>'debug', 'git'=>{'url'=>'https://github.com/ThomasBuchinger/automate-example'}}; puts c.to_yaml" > config.yaml
 script:
-  - bundle exec ./bin/cli.rb list
-  - bundle exec ./bin/cli.rb inspect feature-1-f1
-  - bundle exec ./bin/cli.rb deploy feature-1-f1 --provider docker
+  - bundle exec ./bin/miq-workflow list branch
+  - bundle exec ./bin/miq-workflow list domain
+  - bundle exec ./bin/miq-workflow inspect feature-1-f1
+  - bundle exec ./bin/miq-workflow deploy feature-1-f1 --provider docker
   - ./script/verify_import.sh
   - bundle exec rake travis
