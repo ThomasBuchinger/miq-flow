@@ -4,6 +4,7 @@ module GitFlow
   include GitMethods
   Error = Class.new(StandardError)
 
+
   def self.init
     $logger.debug("Using Settings: #{$settings.to_yaml}")
 
