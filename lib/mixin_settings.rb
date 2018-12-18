@@ -84,7 +84,6 @@ module GitFlow
       $settings[:miq][:password] = password unless password.nil?
     end
 
-
     def self.truthy(value)
       true_values = %w[true TRUE True yes YES Yes t T y Y 1]
       true_values.include?(value.to_s)

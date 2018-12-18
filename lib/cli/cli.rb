@@ -3,7 +3,7 @@ require 'thor'
 require_relative 'list.rb'
 
 module GitFlow
-  # Implements the CLI interface
+  # Implements common CLI methods
   module Cli
     def cli_setup(options={})
       GitFlow::Settings.process_config_file(options['config'])
@@ -16,6 +16,7 @@ module GitFlow
       GitFlow.prepare_repo()
     end
 
+    # Implements CLI
     class MainCli < Thor
       include GitFlow::Cli
 
@@ -43,7 +44,7 @@ module GitFlow
       option :priority, type: :numeric, desc: 'Not-yet-implemented'
       option :provider, desc: 'How to talk to ManageIQ (default: noop)'
       def deploy(branch)
-        self.cli_setup()
+        cli_setup()
         miq_domain = options[:name] || branch.split(/-/)[2] || branch
         provider   = options.fetch(:provider, 'default')
         prio       = options[:miq_priority]

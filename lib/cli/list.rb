@@ -3,7 +3,7 @@ require 'thor'
 
 module GitFlow
   module Cli
-  # Implements the CLI interface
+    # Implements list subcommand
     class ListCli < Thor
       include GitFlow::Cli
 

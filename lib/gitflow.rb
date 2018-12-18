@@ -4,7 +4,6 @@ module GitFlow
   include GitMethods
   Error = Class.new(StandardError)
 
-
   def self.init
     $logger.debug("Using Settings: #{$settings.to_yaml}")
 
@@ -38,7 +37,7 @@ module GitFlow
     valid != false
   end
 
-  def self.human_readable_time(timestamp: , now: Time.now)
+  def self.human_readable_time(timestamp:, now: Time.now) # rubocop:disable Metrics/CyclomaticComplexity
     uptime = (now - timestamp).to_i
     case uptime
     when 0 then 'just now'
