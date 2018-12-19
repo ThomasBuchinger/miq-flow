@@ -4,7 +4,7 @@ module GitFlow
   module MiqProvider
     # This provider does nothing, but it is useful for testing
     class Noop
-      def initialize(opts = {}) end
+      def initialize(opts={}) end
 
       def import(tmpdir, fs_domain, miq_domain)
         $logger.info("Importing with NOOP provider MIQ_DOMAIN=#{miq_domain} TMPDIR=#{tmpdir} FS_DOMAIN=#{fs_domain}")

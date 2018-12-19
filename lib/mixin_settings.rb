@@ -8,6 +8,8 @@ module GitFlow
       update_log_level(:info)
       update_clear_tmp('yes')
       update_workdir('auto')
+
+      update_miq_api(nil, 'admin', nil)
     end
 
     def self.process_environment_variables
@@ -15,6 +17,7 @@ module GitFlow
       update_git(ENV['GIT_URL'], ENV['GIT_PATH'], ENV['GIT_USER'], ENV['GIT_PASSWORD'])
 
       # MIQ params
+      update_miq_api(ENV['MIQ_URL'], ENV['MIQ_USER'], ENV['MIQ_PASSWORD'])
 
       # Misc
       update_log_level(:debug) if truthy(ENV.fetch('VERBOSE', 'no'))
@@ -22,15 +25,18 @@ module GitFlow
       update_clear_tmp(ENV['CLEAR_TMP'])
     end
 
-    def self.process_config_file(path)
+    def self.process_config_file(path) # rubocop:disable Metrics/AbcSize
       return unless path.kind_of?(String) && File.file?(path)
 
       $logger.info("Processing config file: #{path}")
       conf = YAML.load_file(path) || {}
       git_conf = conf['git'] || {}
+      miq_conf = conf['miq'] || {}
+
       update_log_level(conf['log_level'])
       update_clear_tmp(conf['clear_tmp'])
       update_git(git_conf['url'], git_conf['path'], git_conf['user'], git_conf['password'])
+      update_miq_api(miq_conf['url'], miq_conf['user'], miq_conf['password'])
       update_workdir(conf['workdir'])
     end
 
@@ -73,6 +79,12 @@ module GitFlow
       return if dir != 'auto' && !File.directory?(dir)
 
       $settings[:workdir] = dir
+    end
+
+    def self.update_miq_api(url, user, password)
+      $settings[:miq][:url]      = url unless url.nil?
+      $settings[:miq][:user]     = user unless user.nil?
+      $settings[:miq][:password] = password unless password.nil?
     end
 
     def self.truthy(value)

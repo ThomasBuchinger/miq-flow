@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'thor'
+require_relative '../lib/bootstrap.rb'
+require_relative '../lib/cli/cli.rb'
+
+begin
+  GitFlow::Cli::MainCli.start()
+rescue GitFlow::Error => e
+  $logger.error(e.to_s)
+  GitFlow.tear_down()
+end

@@ -3,6 +3,31 @@ require 'rugged'
 module GitFlow
   # The module where all the git related stuff goes in
   module GitMethods
+    def self.clone_repo(opts)
+      url = $settings[:git][:url]
+      $logger.info("Cloning git Repository from: #{url}")
+      user = $settings[:git][:user]
+      pass = $settings[:git][:password]
+      dir  = File.join($tmpdir, 'repo')
+
+      # make Credentials
+      opts[:credentials] = Rugged::Credentials::UserPassword.new(username: user, password: pass) if user && pass
+
+      $git_repo = Rugged::Repository.clone_at(url, dir, opts)
+    rescue Rugged::NetworkError
+      raise GitFlow::Error, "Failed to clone repository at #{url}: #{e}"
+    rescue Rugged::RepositoryError
+      raise GitFlow::Error, "Failed to clone repository at #{url}: #{e}"
+    end
+
+    def self.local_repo(opts)
+      path = $settings[:git][:path]
+      $logger.info("Using git Repository: #{path}")
+      $git_repo = Rugged::Repository.discover(path, opts.fetch(:accross_fs, true))
+    rescue Rugged::RepositoryError
+      raise GitFlow::Error, "Failed to find a repository at #{path}" if $git_repo.nil?
+    end
+
     # Sets up basic git related stuff
     #
     # @git_base: The baseline Rugged::Commit to diff against
@@ -39,7 +64,7 @@ module GitFlow
     # @param [String] oid1
     # @param [String] oid2 defaults to @base => 'master'
     # @return [Rugged::Commit, nil]
-    def merge_base(repo, oid1, oid2 = nil)
+    def merge_base(repo, oid1, oid2=nil)
       oid2 = oid2 || @base || 'master'
 
       base = repo.merge_base(oid1, oid2)
@@ -51,7 +76,7 @@ module GitFlow
     # @param [Rugged::Commit, Rugged::Branch] base defaults to @git_base
     # @param [Rugged::Commit, Rugged::Branch] head defaults to @git_branch
     # @return [Array<String>] A list of changed paths
-    def get_diff_paths(base = nil, head = nil)
+    def get_diff_paths(base=nil, head=nil)
       base ||= @git_base
       head ||= @git_branch
 
@@ -80,7 +105,7 @@ module GitFlow
     # @param [Array<String>] prefix limit returned list to these prefixes
     # @param [String] git remote name used to construct branch name. default: origin
     # @return [Rugged::Branch] all remote pranches starting with prefix
-    def self.get_remote_branches(prefixes = nil, remote = nil)
+    def self.get_remote_branches(prefixes=nil, remote=nil)
       prefixes    = prefixes || @prefix || %w[feature fix master]
       remote_name = remote || @remote || 'origin'
       repo        = @git_repo || $git_repo

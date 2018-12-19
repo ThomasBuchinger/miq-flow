@@ -21,6 +21,11 @@
   #  user: someone
   #  password: <TOKEN>
 
+# miq:
+  # url: https://localhost/api
+  # user: admin
+  # password: smartvm
+
 # Clear the temporay working directory after we are finished
 # Disabling it, is only useful for debugging
 # Default: yes
