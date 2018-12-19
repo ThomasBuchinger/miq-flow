@@ -9,7 +9,7 @@ module GitFlow
       update_clear_tmp('yes')
       update_workdir('auto')
 
-      update_miq_api(nil, 'admin', 'smartvm')
+      update_miq_api(nil, 'admin', nil)
     end
 
     def self.process_environment_variables
@@ -25,15 +25,18 @@ module GitFlow
       update_clear_tmp(ENV['CLEAR_TMP'])
     end
 
-    def self.process_config_file(path)
+    def self.process_config_file(path) # rubocop:disable Metrics/AbcSize
       return unless path.kind_of?(String) && File.file?(path)
 
       $logger.info("Processing config file: #{path}")
       conf = YAML.load_file(path) || {}
       git_conf = conf['git'] || {}
+      miq_conf = conf['miq'] || {}
+
       update_log_level(conf['log_level'])
       update_clear_tmp(conf['clear_tmp'])
       update_git(git_conf['url'], git_conf['path'], git_conf['user'], git_conf['password'])
+      update_miq_api(miq_conf['url'], miq_conf['user'], miq_conf['password'])
       update_workdir(conf['workdir'])
     end
 

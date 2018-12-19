@@ -16,9 +16,9 @@ matrix:
 
 before_install:
   - script/prepare_manageiq.sh
-  - bundle install
   - ruby -ryaml -e "c={'log_level'=>'debug', 'git'=>{'url'=>'https://github.com/ThomasBuchinger/automate-example'}}; puts c.to_yaml" > config.yaml
 script:
+  - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
   - bundle exec ./bin/miq-workflow list branch
   - bundle exec ./bin/miq-workflow list domain
   - bundle exec ./bin/miq-workflow inspect feature-1-f1

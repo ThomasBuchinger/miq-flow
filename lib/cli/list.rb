@@ -7,8 +7,8 @@ module GitFlow
     class ListCli < Thor
       include GitFlow::Cli
 
-      desc 'branch', 'List avaliable Feature Branches'
-      def list_branch
+      desc 'git', 'List avaliable Feature Branches'
+      def git
         cli_setup()
         branches = GitFlow::GitMethods.get_remote_branches()
         text = branches.map{ |b| GitFlow::Feature.new(b.name, {}).show_summary() }
@@ -16,8 +16,8 @@ module GitFlow
         GitFlow.tear_down()
       end
 
-      desc 'domain', 'List available Automate Domains in ManageIQ'
-      def list_aedomain
+      desc 'miq', 'List available Automate Domains in ManageIQ'
+      def miq
         api = GitFlow::ManageIQ.new
         puts api.list_domains
       end

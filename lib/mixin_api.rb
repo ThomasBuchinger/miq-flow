@@ -36,9 +36,8 @@ module GitFlow
     end
 
     def invoke_miq_api(path)
-      url = 'https://localhost:8443/api'
-      req_opts = { method: :get, user: 'admin', password: 'smartvm', verify_ssl: false }
-      req_opts[:url] = url + path
+      req_opts = { method: :get, user: @user, password: @password, verify_ssl: false }
+      req_opts[:url] = @url + path
       $logger.debug("Invoke API: #{req_opts[:url]}")
 
       response = RestClient::Request.execute(req_opts)

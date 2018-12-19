@@ -22,7 +22,7 @@
   #  password: <TOKEN>
 
 # miq:
-  # url: https://localhost:8443/api
+  # url: https://localhost/api
   # user: admin
   # password: smartvm
 

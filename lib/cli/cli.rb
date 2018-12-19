@@ -26,7 +26,7 @@ module GitFlow
       class_option :workdir, type: :string, desc: 'Override the working directory'
       class_option :config, type: :string, alias: '-c', desc: 'Specify config file to load'
 
-      desc 'list BRANCH|DOMAIN', 'Show summary information'
+      desc 'list git|miq', 'Show summary information'
       subcommand 'list', GitFlow::Cli::ListCli
 
       desc 'inspect BRANCH', 'Show detailed information about this Feature-Branch'
