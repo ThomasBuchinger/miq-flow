@@ -15,14 +15,14 @@ To support mutliple feature branches, one has to:
 1. Find the files changed in a given feature branch
 1. Import only changed files, instead of everything
 
-miq-workflow acts as a wrapper around ManageIQ's evm:automate:import, extending it with git support
+miq-workflow is a command line tool, that uses the diff information in git to create partial domains and imports them in ManageIQ
 
 # How does miq-workflow help?
 * Multiple people can work on the same appliance at the same time (but not on the same method)
-* No half-finished code on master anymore
-  Promoting code is no longer a all-or-nothing decision
+* Promoting code is no longer a all-or-nothing decision
 * Pull-Requests and Commit-Squashing work the way you expect them to work
-* Code is cloned from a remote repository, if it is not already on the appliance 
+* Code is cloned from a remote repository, if it is not already on the appliance
+* Manual changes on the WebUI are still possible (although a bit tricky)
 
 # How do I use it?
 * Clone the repository onto your ManageIQ Appliance
