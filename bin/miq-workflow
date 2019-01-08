@@ -2,18 +2,18 @@
 # frozen_string_literal: true
 
 require 'thor'
+require 'English'
 require_relative '../lib/bootstrap.rb'
 require_relative '../lib/cli/cli.rb'
 
 at_exit do
   # Do cleanup
   GitFlow.tear_down()
-  
+
   # Exception or normal exit?
-  if $!
-    #$logger.nil? ? warn($!.to_s) : $logger.error($!.to_s)
-    # Find the correct ExitCode 
-    exit($!.class::EXIT_CODE) if $!.kind_of?(GitFlow::Error)
+  if $ERROR_INFO
+    # Find the correct ExitCode
+    exit($ERROR_INFO.class::EXIT_CODE) if $ERROR_INFO.kind_of?(GitFlow::Error)
     exit 1
   end
 end

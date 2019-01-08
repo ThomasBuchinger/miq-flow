@@ -108,7 +108,7 @@ module GitFlow
 
       @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
       clean_data = cleanup_import(prep_data)
-      raise GitFlow::UnknownStrategyError, "Error calling cleanup method: #{@miq_import_method}" if clean_data[:error] == true
+      raise GitFlow::UnknownStrategyError, "Unknown cleanup method: #{@miq_import_method}" if clean_data[:error] == true
     end
   end
 end

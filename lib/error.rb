@@ -1,7 +1,8 @@
-module GitFlow 
+module GitFlow
   class Error < StandardError
     EXIT_CODE = 2
   end
+
   class ProviderError < Error
     EXIT_CODE = 10
   end

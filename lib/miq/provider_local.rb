@@ -17,7 +17,7 @@ module GitFlow
         success = commands.all? do |cmd|
           system(cmd)
         end
-        raise GitFlow::ProviderError, "Failed to Import to Appliance" unless success
+        raise GitFlow::ProviderError, 'Failed to Import to Appliance' unless success
       end
     end
   end

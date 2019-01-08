@@ -24,7 +24,6 @@ module GitFlow
 
   def self.tear_down
     clean_tmp_dir() unless $settings[:clear_tmp]
-
   end
 
   def self.clean_tmp_dir
@@ -34,7 +33,6 @@ module GitFlow
     FileUtils.rm_rf(File.join($tmpdir, 'repo'))
     FileUtils.rmdir($tmpdir) if Dir["#{$tmpdir}/*"].empty?
   end
-
 
   def self.validate
     if $settings[:git][:url].nil? && $settings[:git][:path].nil?
