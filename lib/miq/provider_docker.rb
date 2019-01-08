@@ -24,6 +24,7 @@ module GitFlow
         commands.each do |cmd|
           system(cmd)
         end
+        raise GitFlow::ProviderError, "Failed to Import to Miq Container" unless success
       end
     end
   end

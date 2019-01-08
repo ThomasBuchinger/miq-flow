@@ -15,7 +15,7 @@ module GitFlow
     end
 
     def validate
-      raise GitFlow::Error, 'Missing ManageIQ Credentials' unless @url && @user && @password
+      raise GitFlow::ApiError, 'Missing ManageIQ Credentials' unless @url && @user && @password
     end
 
     def list_domains

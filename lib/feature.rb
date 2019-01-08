@@ -36,7 +36,7 @@ module GitFlow
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
 
       @git_repo = opts.fetch(:git_repo, nil) || $git_repo
-      raise GitFlow::Error, 'Unable to find git repo' if @git_repo.nil?()
+      raise GitFlow::GitError, 'Unable to find git repo' if @git_repo.nil?()
 
       _create_git(branch_name, @git_repo)
 

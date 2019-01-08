@@ -5,9 +5,17 @@ require 'thor'
 require_relative '../lib/bootstrap.rb'
 require_relative '../lib/cli/cli.rb'
 
-begin
-  GitFlow::Cli::MainCli.start()
-rescue GitFlow::Error => e
-  $logger.error(e.to_s)
+at_exit do
+  # Do cleanup
   GitFlow.tear_down()
+  
+  # Exception or normal exit?
+  if $!
+    #$logger.nil? ? warn($!.to_s) : $logger.error($!.to_s)
+    # Find the correct ExitCode 
+    exit($!.class::EXIT_CODE) if $!.kind_of?(GitFlow::Error)
+    exit 1
+  end
 end
+
+GitFlow::Cli::MainCli.start()

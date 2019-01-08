@@ -14,9 +14,10 @@ module GitFlow
           " DOMAIN=#{fs_domain} IMPORT_AS=#{miq_domain} IMPORT_DIR=#{tmpdir} OVERWRITE=true PREVIEW=false ENABLED=true"
         ]
         $logger.info('Importing with Appliance provider')
-        commands.each do |cmd|
+        success = commands.all? do |cmd|
           system(cmd)
         end
+        raise GitFlow::ProviderError, "Failed to Import to Appliance" unless success
       end
     end
   end

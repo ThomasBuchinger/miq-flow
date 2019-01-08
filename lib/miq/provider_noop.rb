@@ -9,6 +9,7 @@ module GitFlow
       def initialize(opts={}) end
 
       def import(tmpdir, fs_domain, miq_domain)
+        raise GitFlow::ProviderError, "This provider cannot fail" if false
         $logger.info("Importing with NOOP provider MIQ_DOMAIN=#{miq_domain} TMPDIR=#{tmpdir} FS_DOMAIN=#{fs_domain}")
       end
     end

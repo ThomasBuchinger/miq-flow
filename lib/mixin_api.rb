@@ -8,7 +8,7 @@ module GitFlow
   module ApiMethods
     def query_automate_model(path, type: :undefined, attributes: nil, depth: -1)
       klass_type = get_api_type(type)
-      raise GitFlow::Error, "Unknown Type: #{type}, while quering automate model" if klass_type.nil?
+      raise GitFlow::ApiError, "Unknown Type: #{type}, while quering automate model" if klass_type.nil?
 
       response = invoke_miq_api("/automate/#{path}?depth=#{depth}#{get_attributes_param(attributes)}")
       select_for_type(response, type)
@@ -45,6 +45,10 @@ module GitFlow
 
       response = RestClient::Request.execute(req_opts)
       JSON.parse(response.body)
+    rescue RestClient::Exception => e
+      raise GitFlow::ApiError, "Invalid API call: #{e.message}", []
+    rescue Errno::ECONNREFUSED => e
+      raise GitFlow::ApiError, "Unable to connect to ManageIQ: #{e.message}", []
     end
   end
 end

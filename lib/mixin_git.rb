@@ -17,9 +17,9 @@ module GitFlow
 
       $git_repo = Rugged::Repository.clone_at(url, dir, opts)
     rescue Rugged::NetworkError
-      raise GitFlow::Error, "Failed to clone repository at #{url}: #{e}"
+      raise GitFlow::GitError, "Failed to clone repository at #{url}: #{e}"
     rescue Rugged::RepositoryError
-      raise GitFlow::Error, "Failed to clone repository at #{url}: #{e}"
+      raise GitFlow::GitError, "Failed to clone repository at #{url}: #{e}"
     end
 
     def self.local_repo(opts)
@@ -27,7 +27,7 @@ module GitFlow
       $logger.info("Using git Repository: #{path}")
       $git_repo = Rugged::Repository.discover(path, opts.fetch(:accross_fs, true))
     rescue Rugged::RepositoryError
-      raise GitFlow::Error, "Failed to find a repository at #{path}" if $git_repo.nil?
+      raise GitFlow::GitError, "Failed to find a repository at #{path}" if $git_repo.nil?
     end
 
     # Sets up basic git related stuff
@@ -39,10 +39,10 @@ module GitFlow
     # @param [Rugged::Repository] repo
     def _create_git(branch_name, repo)
       @git_branch = create_local_branch(branch_name, repo)
-      raise GitFlow::Error, "Unable to find feature branch: #{branch_name}" if @git_branch.nil?
+      raise GitFlow::GitError, "Unable to find feature branch: #{branch_name}" if @git_branch.nil?
 
       @git_base = merge_base(repo, branch_name)
-      raise GitFlow::Error, "Unable to find base branch: #{@base}" if @git_base.nil?
+      raise GitFlow::GitError, "Unable to find base branch: #{@base}" if @git_base.nil?
     end
 
     # Creates a local branch tracking upstream if it does not already exist
@@ -54,7 +54,7 @@ module GitFlow
 
       $logger.debug("Creating local branch: #{branch_name}")
       rbranch = "#{@remote_name}/#{branch_name}"
-      raise GitFlow::Error, "Unable to find remote branch #{rbranch}" if repo.branches[rbranch].nil?()
+      raise GitFlow::GitError, "Unable to find remote branch #{rbranch}" if repo.branches[rbranch].nil?()
 
       repo.create_branch(branch_name, rbranch)
     end
@@ -82,8 +82,8 @@ module GitFlow
       base ||= @git_base
       head ||= @git_branch
 
-      raise GitFlow::Error, 'Diff failed: base is nil'   if base.nil?
-      raise GitFlow::Error, 'Diff failed: branch is nil' if head.nil?
+      raise GitFlow::GitError, 'Diff failed: base is nil'   if base.nil?
+      raise GitFlow::GitError, 'Diff failed: branch is nil' if head.nil?
 
       base_commit = base.kind_of?(Rugged::Reference) ? base.target : base
       head_commit = head.kind_of?(Rugged::Reference) ? head.target : head
