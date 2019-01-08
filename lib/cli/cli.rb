@@ -21,6 +21,10 @@ module GitFlow
     class MainCli < Thor
       include GitFlow::Cli
 
+      def self.exit_on_failure?
+        true
+      end
+
       class_option :verbose, type: :boolean, desc: 'Turn on verbose logging'
       class_option :quiet, type: :boolean, desc: 'Only show errors and warnings'
       class_option :cleanup, type: :boolean, desc: 'Clean up the working dir before exiting'

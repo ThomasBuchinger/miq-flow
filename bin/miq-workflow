@@ -13,6 +13,8 @@ at_exit do
   # Exception or normal exit?
   if $ERROR_INFO
     # Find the correct ExitCode
+    # and do not print the stack trace
+    $ERROR_INFO.set_backtrace(nil)
     exit($ERROR_INFO.class::EXIT_CODE) if $ERROR_INFO.kind_of?(GitFlow::Error)
     exit 1
   end
