@@ -14,6 +14,10 @@ end
 RSpec::Core::RakeTask.new(:"spec:integration") do |config|
 end
 
+RSpec::Core::RakeTask.new(:spec) do |config|
+  config.rspec_opts = '--format doc'
+end
+
 task :default do
-  puts 'There are not test yet. Sorry'
+  puts 'There are no test yet. Sorry'
 end

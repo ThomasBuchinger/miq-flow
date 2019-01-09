@@ -49,7 +49,8 @@ module GitFlow
         info: Logger::INFO,
         warn: Logger::WARN,
         error: Logger::ERROR,
-        fatal: Logger::FATAL
+        fatal: Logger::FATAL,
+        unknown: Logger::UNKNOWN
       }
       return unless log_level.key?(level.to_sym)
 
