@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GitFlow
   # Implements API calls to ManageIQ
   class ManageIQ

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GitFlow
   module MiqProvider
     # This provider assumes to be running on a ManageIQ Appliance

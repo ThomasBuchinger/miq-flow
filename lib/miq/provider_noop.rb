@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GitFlow
   # MiqProvider implement the actual communication to ManageIQ
   # This depends the choosen deployment scenario for ManageIQ (e.g. Appliance)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GitFlow
   # Represents a single ManageIQ Automate Domain on disk
   class MiqDomain

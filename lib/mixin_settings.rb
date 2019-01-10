@@ -1,4 +1,5 @@
-# Global Methods
+# frozen_string_literal: true
+
 module GitFlow
   # This mixin handles configuration updates
   # Every update_* method only modifies he config if a

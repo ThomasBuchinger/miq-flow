@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require 'rest-client'
 require 'json'
+
 module GitFlow
   # ManageIQ API related stuff
   module ApiMethods

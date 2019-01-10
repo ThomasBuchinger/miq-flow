@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Global Methods
 module GitFlow
   include GitFlow::Settings

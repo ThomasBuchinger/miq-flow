@@ -1,4 +1,7 @@
 ---
+AllCops:
+  TargetRubyVersion: 2.3
+
 Style/GlobalVars:
   AllowedVariables: [ $logger, $settings, $git_repo, $tmpdir ]
 Metrics/LineLength:
@@ -20,3 +23,6 @@ Style/ClassCheck:
 Style/RedundantSelf:
   Exclude:
     - lib/domain.rb
+Metrics/BlockLength:
+  Exclude:
+    - spec/**

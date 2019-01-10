@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require 'yaml'
 module GitFlow
   module MiqMethods
     # ManageIQ related Methods, that are not plugable
     module MiqUtils
-      DOMAIN_FILE_NAME = '__domain__.yaml'.freeze
+      DOMAIN_FILE_NAME = '__domain__.yaml'
 
       # Find and read Automate domains
       # Search PATH for __domain__.yaml files, indicating a ManageIQ Automate Domain
