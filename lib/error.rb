@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GitFlow
   class Error < StandardError
     EXIT_CODE = 2
