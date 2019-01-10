@@ -5,7 +5,7 @@ require 'rubocop/rake_task'
 RuboCop::RakeTask.new
 
 desc 'Run everything test related'
-task travis: %i[rubocop]
+task travis: %i[rubocop spec]
 
 # RSpec::Core::RakeTask.new(:spec) do |config|
 #   config.rspec_opts = '--format doc'
