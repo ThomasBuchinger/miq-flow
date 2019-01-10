@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GitFlow
   module MiqProvider
     # This Provider uses 'docker exec' to communicate to ManageIQ
