@@ -10,6 +10,9 @@ matrix:
     - name: "Hammer"
       rvm: 2.4
       env: TAG=hammer-1-rc2
+    - name: "I-Release"
+      rvm: 2.5
+      env: TAG=hammer-1-rc2
     - name: "Hammer + Integration"
       rvm: 2.4
       env: TAG=hammer-1-rc2 SUITE=integration
@@ -19,9 +22,6 @@ before_install:
   - ruby -ryaml -e "c={'log_level'=>'debug', 'git'=>{'url'=>'https://github.com/ThomasBuchinger/automate-example'}}; puts c.to_yaml" > config.yaml
 script:
   - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
-  - bundle exec ./bin/miq-workflow list branch
-  - bundle exec ./bin/miq-workflow list domain
-  - bundle exec ./bin/miq-workflow inspect feature-1-f1
   - bundle exec ./bin/miq-workflow deploy feature-1-f1 --provider docker
   - ./script/verify_import.sh
   - bundle install --with development
