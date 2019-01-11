@@ -3,9 +3,6 @@
 
 require 'thor'
 require 'English'
-require_relative '../lib/bootstrap.rb'
-require_relative '../lib/cli/cli.rb'
-
 at_exit do
   # Do cleanup
   GitFlow.tear_down()
@@ -19,5 +16,8 @@ at_exit do
     exit 1
   end
 end
+
+require_relative '../lib/bootstrap.rb'
+require_relative '../lib/cli/cli.rb'
 
 GitFlow::Cli::MainCli.start()
