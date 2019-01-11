@@ -35,26 +35,23 @@ module GitFlow
   end
 
   def self.validate(mode=[])
-    data = {valid: true, count: 0, messages: []}
-    validate_git(data) if mode.include?(:git) 
-    validate_miq(data) if mode.include?(:miq) 
-    validate_api(data) if mode.include?(:api) 
-    
-    data[:count] == 0 ? true : raise(GitFlow::ConfigurationError, "Invalid Configuration. #{data[:count]} offenses found.")
+    d = { count: 0, messages: [] }
+    validate_git(d) if mode.include?(:git)
+    validate_miq(d) if mode.include?(:miq)
+    validate_api(d) if mode.include?(:api)
+
+    d[:count].zero? ? true : raise(GitFlow::ConfigurationError, "Invalid Configuration. #{d[:count]} offenses found.")
+  end
+
+  def self.log_problem(data, message='')
+    $logger.fatal(message)
+    data[:messages] << message
+    data[:count] += 1
   end
 
   def self.validate_api(valid)
-    if $settings[:miq][:url].nil?
-      $logger.fatal('No ManageIQ API specified')
-      valid[:messages] << 'No ManageIQ API specified'
-      valid[:count] += 1
-    end
-    if $settings[:miq][:password].nil?
-      $logger.fatal('No ManageIQ API password specified')
-      valid[:messages] << 'No git repository password specified'
-      valid[:count] += 1
-    end
-    valid
+    log_problem(valid, 'No ManageIQ API specified') if $settings[:miq][:url].nil?
+    log_problem(valid, 'No ManageIQ API password specified') if $settings[:miq][:password].nil?
   end
 
   def self.validate_miq(valid)
@@ -62,12 +59,7 @@ module GitFlow
   end
 
   def self.validate_git(valid)
-    if $settings[:git][:url].nil? && $settings[:git][:path].nil?
-      $logger.fatal('No git repository specified')
-      valid[:messages] << 'No git repository specified'
-      valid[:count] += 1
-      valid[:valid] = false
-    end 
+    log_problem(valid, 'No git repository specified') if $settings[:git][:url].nil? && $settings[:git][:path].nil?
   end
 
   def self.human_readable_time(timestamp:, now: Time.now) # rubocop:disable Metrics/CyclomaticComplexity

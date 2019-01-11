@@ -60,7 +60,7 @@ module GitFlow
     end
 
     def self.update_searchpath(path=[], replace: false)
-      return $settings[:searchpath] = path if replace 
+      return $settings[:searchpath] = path if replace
 
       $settings[:searchpath] = path.concat($settings[:searchpath])
     end

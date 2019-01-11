@@ -40,7 +40,7 @@ module GitFlow
       desc 'inspect BRANCH', 'Show detailed information about this Feature-Branch'
       option :short, type: :boolean, default: false, desc: 'Same as list'
       def inspect(name)
-        cli_setup(options, [:git])
+        cli_setup(options, %i[git])
         feature = GitFlow::Feature.new(name, {})
         text = options[:short] ? feature.show_summary() : feature.show_details()
         puts text
@@ -52,7 +52,7 @@ module GitFlow
       option :priority, type: :numeric, desc: 'Not-yet-implemented'
       option :provider, desc: 'How to talk to ManageIQ (default: noop)'
       def deploy(branch)
-        cli_setup(options, [:git, :miq])
+        cli_setup(options, %i[git miq])
         miq_domain = options[:name] || branch.split(/-/)[2] || branch
         provider   = options.fetch(:provider, 'default')
         prio       = options[:miq_priority]

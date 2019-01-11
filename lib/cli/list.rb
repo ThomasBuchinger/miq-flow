@@ -10,7 +10,7 @@ module GitFlow
 
       desc 'git', 'List avaliable Feature Branches'
       def git
-        cli_setup(options, [:git])
+        cli_setup(options, %i[git])
         branches = GitFlow::GitMethods.get_remote_branches()
         text = branches.map{ |b| GitFlow::Feature.new(b.name, {}).show_summary() }
         puts text
@@ -19,7 +19,7 @@ module GitFlow
 
       desc 'miq', 'List available Automate Domains in ManageIQ'
       def miq
-        cli_setup(options, [:api])
+        cli_setup(options, %i[api])
         api = GitFlow::ManageIQ.new
         puts api.list_domains
       end

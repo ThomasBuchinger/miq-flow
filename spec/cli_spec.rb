@@ -82,12 +82,11 @@ RSpec.describe GitFlow::Cli::MainCli, integration: true do
     let!(:server_stub) do
       stub_request(:get, %r{/api/automate/})
     end
- 
 
     it_behaves_like('ManageIQ API')
     it 'handles 500 codes' do
       server_stub.to_return(status: 500)
-      expect{ subject.invoke(:list, ['miq']) }.to  raise_error(GitFlow::BadResponseError)
+      expect{ subject.invoke(:list, ['miq']) }.to raise_error(GitFlow::BadResponseError)
     end
     it 'handles invalid Credentials' do
       server_stub.to_return(status: 403)
