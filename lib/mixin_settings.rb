@@ -5,12 +5,30 @@ module GitFlow
   # Every update_* method only modifies he config if a
   # reasonable value is provided
   module Settings
+    SEARCHPATH = [
+      'config.yml',
+      'config.yaml',
+      'gitflow.yml',
+      'gitflow.yaml',
+      File.expand_path('~/.gitflow.yml'),
+      File.expand_path('~/.gitflow.yaml'),
+      File.expand_path('~/.gitflow/config.yml'),
+      File.expand_path('~/.gitflow/config.yaml')
+    ].freeze
+
     def self.set_defaults
+      update_searchpath(SEARCHPATH.dup, replace: true)
       update_log_level(:info)
       update_clear_tmp('yes')
       update_workdir('auto')
 
       update_miq_api(nil, 'admin', nil)
+    end
+
+    def self.search_config_files
+      $settings[:searchpath].each do |file|
+        GitFlow::Settings.process_config_file(file)
+      end
     end
 
     def self.process_environment_variables
@@ -39,6 +57,12 @@ module GitFlow
       update_git(git_conf['url'], git_conf['path'], git_conf['user'], git_conf['password'])
       update_miq_api(miq_conf['url'], miq_conf['user'], miq_conf['password'])
       update_workdir(conf['workdir'])
+    end
+
+    def self.update_searchpath(path=[], replace: false)
+      return $settings[:searchpath] = path if replace 
+
+      $settings[:searchpath] = path.concat($settings[:searchpath])
     end
 
     def self.update_log_level(level)

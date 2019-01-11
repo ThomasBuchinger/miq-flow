@@ -28,18 +28,3 @@ $settings = {}
 $settings[:miq] = {}
 $settings[:git] = {}
 GitFlow::Settings.set_defaults()
-SEARCHPATH = [
-  'config.yml',
-  'config.yaml',
-  'gitflow.yml',
-  'gitflow.yaml',
-  File.expand_path('~/.gitflow.yml'),
-  File.expand_path('~/.gitflow.yaml'),
-  File.expand_path('~/.gitflow/config.yml'),
-  File.expand_path('~/.gitflow/config.yaml')
-].freeze
-SEARCHPATH.each do |file|
-  GitFlow::Settings.process_config_file(file)
-end
-GitFlow::Settings.process_environment_variables()
-GitFlow.validate() ? true : exit(1)

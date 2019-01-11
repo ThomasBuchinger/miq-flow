@@ -6,13 +6,16 @@ require_relative 'list.rb'
 module GitFlow
   # Implements common CLI methods
   module Cli
-    def cli_setup(options={})
+    def cli_setup(options={}, mode=[])
+      GitFlow::Settings.search_config_files()
+      GitFlow::Settings.process_environment_variables()
       GitFlow::Settings.process_config_file(options['config'])
       GitFlow::Settings.update_log_level(:debug) if options['verbose'] == true
       GitFlow::Settings.update_log_level(:warn)  if options['quiet'] == true
       GitFlow::Settings.update_clear_tmp(options['cleanup'])
       GitFlow::Settings.update_workdir(options['workdir'])
 
+      GitFlow.validate(mode)
       GitFlow.init()
       GitFlow.prepare_repo()
     end
@@ -37,7 +40,7 @@ module GitFlow
       desc 'inspect BRANCH', 'Show detailed information about this Feature-Branch'
       option :short, type: :boolean, default: false, desc: 'Same as list'
       def inspect(name)
-        cli_setup()
+        cli_setup(options, [:git])
         feature = GitFlow::Feature.new(name, {})
         text = options[:short] ? feature.show_summary() : feature.show_details()
         puts text
@@ -49,7 +52,7 @@ module GitFlow
       option :priority, type: :numeric, desc: 'Not-yet-implemented'
       option :provider, desc: 'How to talk to ManageIQ (default: noop)'
       def deploy(branch)
-        cli_setup()
+        cli_setup(options, [:git, :miq])
         miq_domain = options[:name] || branch.split(/-/)[2] || branch
         provider   = options.fetch(:provider, 'default')
         prio       = options[:miq_priority]

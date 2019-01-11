@@ -10,12 +10,6 @@ module GitFlow
       @url      = url      || $settings[:miq][:url]
       @user     = user     || $settings[:miq][:user]
       @password = password || $settings[:miq][:password]
-
-      validate()
-    end
-
-    def validate
-      raise GitFlow::ApiError, 'Missing ManageIQ Credentials' unless @url && @user && @password
     end
 
     def list_domains

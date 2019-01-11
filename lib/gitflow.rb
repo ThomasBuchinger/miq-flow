@@ -34,12 +34,40 @@ module GitFlow
     FileUtils.rmdir($tmpdir) if Dir["#{$tmpdir}/*"].empty?
   end
 
-  def self.validate
+  def self.validate(mode=[])
+    data = {valid: true, count: 0, messages: []}
+    validate_git(data) if mode.include?(:git) 
+    validate_miq(data) if mode.include?(:miq) 
+    validate_api(data) if mode.include?(:api) 
+    
+    data[:count] == 0 ? true : raise(GitFlow::ConfigurationError, "Invalid Configuration. #{data[:count]} offenses found.")
+  end
+
+  def self.validate_api(valid)
+    if $settings[:miq][:url].nil?
+      $logger.fatal('No ManageIQ API specified')
+      valid[:messages] << 'No ManageIQ API specified'
+      valid[:count] += 1
+    end
+    if $settings[:miq][:password].nil?
+      $logger.fatal('No ManageIQ API password specified')
+      valid[:messages] << 'No git repository password specified'
+      valid[:count] += 1
+    end
+    valid
+  end
+
+  def self.validate_miq(valid)
+    valid
+  end
+
+  def self.validate_git(valid)
     if $settings[:git][:url].nil? && $settings[:git][:path].nil?
       $logger.fatal('No git repository specified')
-      valid = false
-    end
-    valid != false
+      valid[:messages] << 'No git repository specified'
+      valid[:count] += 1
+      valid[:valid] = false
+    end 
   end
 
   def self.human_readable_time(timestamp:, now: Time.now) # rubocop:disable Metrics/CyclomaticComplexity
