@@ -45,10 +45,14 @@ module GitFlow
 
       response = RestClient::Request.execute(req_opts)
       JSON.parse(response.body)
+    rescue RestClient::Exceptions::Timeout => e
+      raise GitFlow::ConnectionError, "Unable to connect to ManageIQ: #{e.message}", []
     rescue RestClient::Exception => e
-      raise GitFlow::ApiError, "Invalid API call: #{e.message}", []
+      raise GitFlow::BadResponseError, "Invalid API call: #{e.message}", []
     rescue Errno::ECONNREFUSED => e
-      raise GitFlow::ApiError, "Unable to connect to ManageIQ: #{e.message}", []
+      raise GitFlow::ConnectionError, "ManageIQ API unavailalbe: #{e.message}", []
+    rescue SocketError => e
+      raise GitFlow::ConnectionError, "Unable to connect ot ManageIQ: #{e.message}", []
     end
   end
 end

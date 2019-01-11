@@ -16,9 +16,9 @@ module GitFlow
       opts[:credentials] = Rugged::Credentials::UserPassword.new(username: user, password: pass) if user && pass
 
       $git_repo = Rugged::Repository.clone_at(url, dir, opts)
-    rescue Rugged::NetworkError
+    rescue Rugged::NetworkError => e
       raise GitFlow::GitError, "Failed to clone repository at #{url}: #{e}"
-    rescue Rugged::RepositoryError
+    rescue Rugged::RepositoryError => e
       raise GitFlow::GitError, "Failed to clone repository at #{url}: #{e}"
     end
 
