@@ -13,9 +13,10 @@ require 'miq/provider_local.rb'
 require 'miq/provider_noop.rb'
 require 'miq/method_partial.rb'
 require 'miq/method_clean.rb'
-require 'miq/mixin_miq.rb'
+require 'mixin_miq.rb'
 require 'mixin_git.rb'
 require 'mixin_api.rb'
+require 'error.rb'
 require 'mixin_settings.rb'
 require 'cli/cli.rb'
 require 'manageiq.rb'
@@ -27,18 +28,3 @@ $settings = {}
 $settings[:miq] = {}
 $settings[:git] = {}
 GitFlow::Settings.set_defaults()
-SEARCHPATH = [
-  'config.yml',
-  'config.yaml',
-  'gitflow.yml',
-  'gitflow.yaml',
-  File.expand_path('~/.gitflow.yml'),
-  File.expand_path('~/.gitflow.yaml'),
-  File.expand_path('~/.gitflow/config.yml'),
-  File.expand_path('~/.gitflow/config.yaml')
-].freeze
-SEARCHPATH.each do |file|
-  GitFlow::Settings.process_config_file(file)
-end
-GitFlow::Settings.process_environment_variables()
-GitFlow.validate() ? true : exit(1)

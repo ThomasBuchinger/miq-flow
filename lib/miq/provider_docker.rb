@@ -21,9 +21,11 @@ module GitFlow
           " DOMAIN=#{fs_domain} IMPORT_AS=#{miq_domain} IMPORT_DIR=#{tmpdir} OVERWRITE=true PREVIEW=false ENABLED=true'"
         ]
         $logger.info('Importing with Docker provider')
-        commands.each do |cmd|
+        success = commands.each do |cmd|
           system(cmd)
         end
+
+        raise GitFlow::ProviderError, 'Failed to Import to Miq Container' unless success
       end
     end
   end

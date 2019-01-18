@@ -4,7 +4,6 @@
 module GitFlow
   include GitFlow::Settings
   include GitMethods
-  Error = Class.new(StandardError)
 
   def self.init
     $logger.debug("Using Settings: #{$settings.to_yaml}")
@@ -24,19 +23,43 @@ module GitFlow
   end
 
   def self.tear_down
-    return unless $settings[:clear_tmp]
+    clean_tmp_dir() unless $settings[:clear_tmp]
+  end
+
+  def self.clean_tmp_dir
+    return if $tmpdir.nil?
 
     FileUtils.rm_rf(File.join($tmpdir, 'import'))
     FileUtils.rm_rf(File.join($tmpdir, 'repo'))
     FileUtils.rmdir($tmpdir) if Dir["#{$tmpdir}/*"].empty?
   end
 
-  def self.validate
-    if $settings[:git][:url].nil? && $settings[:git][:path].nil?
-      $logger.fatal('No git repository specified')
-      valid = false
-    end
-    valid != false
+  def self.validate(mode=[])
+    d = { count: 0, messages: [] }
+    validate_git(d) if mode.include?(:git)
+    validate_miq(d) if mode.include?(:miq)
+    validate_api(d) if mode.include?(:api)
+
+    d[:count].zero? ? true : raise(GitFlow::ConfigurationError, "Invalid Configuration. #{d[:count]} offenses found.")
+  end
+
+  def self.log_problem(data, message='')
+    $logger.fatal(message)
+    data[:messages] << message
+    data[:count] += 1
+  end
+
+  def self.validate_api(valid)
+    log_problem(valid, 'No ManageIQ API specified') if $settings[:miq][:url].nil?
+    log_problem(valid, 'No ManageIQ API password specified') if $settings[:miq][:password].nil?
+  end
+
+  def self.validate_miq(valid)
+    valid
+  end
+
+  def self.validate_git(valid)
+    log_problem(valid, 'No git repository specified') if $settings[:git][:url].nil? && $settings[:git][:path].nil?
   end
 
   def self.human_readable_time(timestamp:, now: Time.now) # rubocop:disable Metrics/CyclomaticComplexity
