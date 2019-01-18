@@ -34,7 +34,7 @@ module MiqFlow
       class_option :workdir, type: :string, desc: 'Override the working directory'
       class_option :config, type: :string, alias: '-c', desc: 'Specify config file to load'
 
-      desc 'list git|miq', 'Show summary information'
+      desc 'list branches|domains', 'Show summary information'
       subcommand 'list', MiqFlow::Cli::ListCli
 
       desc 'inspect BRANCH', 'Show detailed information about this Feature-Branch'

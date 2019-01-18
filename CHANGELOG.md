@@ -14,8 +14,8 @@
 - Availalbe Commands:
   - miq-flow deploy
   - miq-flow inspect
-  - miq-flow list git
-  - miq-flow list miq
+  - miq-flow list branches
+  - miq-flow list domains
 - Availalbe Providers:
   - provider_local (to be used on MIQ appliances)
   - provider_noop (does nothing)
