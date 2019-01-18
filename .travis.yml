@@ -9,13 +9,13 @@ matrix:
       env: TAG=latest-gaprindashvili
     - name: "Hammer"
       rvm: 2.4
-      env: TAG=hammer-1
+      env: TAG=latest-hammer
     - name: "Ivanchuk (master)"
       rvm: 2.5
       env: TAG=latest
     - name: "Hammer + Integration"
       rvm: 2.4
-      env: TAG=hammer-1 SUITE=integration
+      env: TAG=latest-hammer SUITE=integration
 
 before_install:
   - script/prepare_manageiq.sh
@@ -23,7 +23,7 @@ before_install:
 script:
   - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
   - rake install:local
-  - miq-workflow deploy feature-1-f1 --provider docker
+  - miq-flow deploy feature-1-f1 --provider docker
   - ./script/verify_import.sh
   - bundle install --with development
   - bundle exec rake travis
