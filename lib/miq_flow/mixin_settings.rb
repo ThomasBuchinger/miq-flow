@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GitFlow
+module MiqFlow
   # This mixin handles configuration updates
   # Every update_* method only modifies he config if a
   # reasonable value is provided
@@ -8,12 +8,12 @@ module GitFlow
     SEARCHPATH = [
       'config.yml',
       'config.yaml',
-      'gitflow.yml',
-      'gitflow.yaml',
-      File.expand_path('~/.gitflow.yml'),
-      File.expand_path('~/.gitflow.yaml'),
-      File.expand_path('~/.gitflow/config.yml'),
-      File.expand_path('~/.gitflow/config.yaml')
+      'miqflow.yml',
+      'miqflow.yaml',
+      File.expand_path('~/.miqflow.yml'),
+      File.expand_path('~/.miqflow.yaml'),
+      File.expand_path('~/.miqflow/config.yml'),
+      File.expand_path('~/.miqflow/config.yaml')
     ].freeze
 
     def self.set_defaults
@@ -27,7 +27,7 @@ module GitFlow
 
     def self.search_config_files
       $settings[:searchpath].each do |file|
-        GitFlow::Settings.process_config_file(file)
+        MiqFlow::Settings.process_config_file(file)
       end
     end
 

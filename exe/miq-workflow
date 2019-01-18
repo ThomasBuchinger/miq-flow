@@ -5,19 +5,19 @@ require 'thor'
 require 'English'
 at_exit do
   # Do cleanup
-  GitFlow.tear_down()
+  MiqFlow.tear_down()
 
   # Exception or normal exit?
   if $ERROR_INFO
     # Find the correct ExitCode
     # and do not print the stack trace
     $ERROR_INFO.set_backtrace(nil)
-    exit($ERROR_INFO.class::EXIT_CODE) if $ERROR_INFO.kind_of?(GitFlow::Error)
+    exit($ERROR_INFO.class::EXIT_CODE) if $ERROR_INFO.kind_of?(MiqFlow::Error)
     exit 1
   end
 end
 
-require_relative '../lib/bootstrap.rb'
-require_relative '../lib/cli/cli.rb'
+require_relative '../lib/miq_flow'
+require_relative '../lib/miq_flow/cli'
 
-GitFlow::Cli::MainCli.start()
+MiqFlow::Cli::MainCli.start()

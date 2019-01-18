@@ -2,25 +2,25 @@
 
 require 'thor'
 
-module GitFlow
+module MiqFlow
   module Cli
     # Implements list subcommand
     class ListCli < Thor
-      include GitFlow::Cli
+      include MiqFlow::Cli
 
       desc 'git', 'List avaliable Feature Branches'
       def git
         cli_setup(options, %i[git])
-        branches = GitFlow::GitMethods.get_remote_branches()
-        text = branches.map{ |b| GitFlow::Feature.new(b.name, {}).show_summary() }
+        branches = MiqFlow::GitMethods.get_remote_branches()
+        text = branches.map{ |b| MiqFlow::Feature.new(b.name, {}).show_summary() }
         puts text
-        GitFlow.tear_down()
+        MiqFlow.tear_down()
       end
 
       desc 'miq', 'List available Automate Domains in ManageIQ'
       def miq
         cli_setup(options, %i[api])
-        api = GitFlow::ManageIQ.new
+        api = MiqFlow::ManageIQ.new
         puts api.list_domains
       end
     end

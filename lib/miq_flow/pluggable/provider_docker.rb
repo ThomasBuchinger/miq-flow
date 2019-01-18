@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GitFlow
+module MiqFlow
   module MiqProvider
     # This Provider uses 'docker exec' to communicate to ManageIQ
     # This Provider assumes, that a manageiq/manageiq continer is running on the local docker
@@ -25,7 +25,7 @@ module GitFlow
           system(cmd)
         end
 
-        raise GitFlow::ProviderError, 'Failed to Import to Miq Container' unless success
+        raise MiqFlow::ProviderError, 'Failed to Import to Miq Container' unless success
       end
     end
   end

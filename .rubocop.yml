@@ -6,6 +6,8 @@ Style/GlobalVars:
   AllowedVariables: [ $logger, $settings, $git_repo, $tmpdir ]
 Metrics/LineLength:
   Max: 120
+  Exclude:
+    - miq_flow.gemspec
 Metrics/MethodLength:
   Max: 50
 Metrics/AbcSize:
@@ -22,7 +24,8 @@ Style/ClassCheck:
 
 Style/RedundantSelf:
   Exclude:
-    - lib/domain.rb
+    - lib/miq_flow/domain.rb
 Metrics/BlockLength:
   Exclude:
     - spec/**
+    - miq_flow.gemspec

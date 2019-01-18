@@ -1,5 +1,11 @@
-.bundle
-.yardoc
+/.bundle/
+/.yardoc/
+/_yarddoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports
+/tmp/
 .vscode
 
-doc/
+.rspec_status

@@ -1,3 +1,11 @@
+PATH
+  remote: .
+  specs:
+    miq_flow (1.0.0.pre.rc1)
+      rest-client (~> 2.0)
+      rugged
+      thor
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -23,7 +31,7 @@ GEM
     powerpack (0.1.2)
     public_suffix (3.0.3)
     rainbow (3.0.0)
-    rake (12.3.2)
+    rake (10.5.0)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -66,13 +74,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rake
-  rest-client (~> 2)
-  rspec (> 3)
+  bundler (~> 1.17)
+  miq_flow!
+  rake (~> 10.0)
+  rspec (~> 3.0)
   rubocop
-  rugged
-  thor
-  webmock (> 3)
+  webmock (~> 3.0)
 
 BUNDLED WITH
    1.17.1

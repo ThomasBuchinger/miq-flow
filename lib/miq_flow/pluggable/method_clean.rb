@@ -3,7 +3,7 @@
 require 'tmpdir'
 require 'yaml'
 
-module GitFlow
+module MiqFlow
   # This module contains everything needed to prepare an Automate domain for import
   # Mostly file handling at this point
   module MiqMethods
