@@ -6,7 +6,7 @@ module MiqFlow
     class Appliance
       attr_accessor :container_name
 
-      def initialize(opts={})
+      def initialize(_opts={})
         # fix rubocop issue #6678
         true
       end
