@@ -6,7 +6,10 @@ module MiqFlow
     class Appliance
       attr_accessor :container_name
 
-      def initialize(_opts) end
+      def initialize(opts={})
+        # fix rubocop issue #6678
+        true
+      end
 
       def import(tmpdir, fs_domain, miq_domain)
         commands = [
