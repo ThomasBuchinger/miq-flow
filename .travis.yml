@@ -9,20 +9,21 @@ matrix:
       env: TAG=latest-gaprindashvili
     - name: "Hammer"
       rvm: 2.4
-      env: TAG=hammer-1-rc2
-    - name: "I-Release"
+      env: TAG=hammer-1
+    - name: "Ivanchuk (master)"
       rvm: 2.5
-      env: TAG=hammer-1-rc2
+      env: TAG=latest
     - name: "Hammer + Integration"
       rvm: 2.4
-      env: TAG=hammer-1-rc2 SUITE=integration
+      env: TAG=hammer-1 SUITE=integration
 
 before_install:
   - script/prepare_manageiq.sh
   - ruby -ryaml -e "c={'log_level'=>'debug', 'git'=>{'url'=>'https://github.com/ThomasBuchinger/automate-example'}}; puts c.to_yaml" > config.yaml
 script:
   - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
-  - bundle exec ./bin/miq-workflow deploy feature-1-f1 --provider docker
+  - rake install:local
+  - miq-workflow deploy feature-1-f1 --provider docker
   - ./script/verify_import.sh
   - bundle install --with development
   - bundle exec rake travis

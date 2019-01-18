@@ -10,5 +10,5 @@
 
 .rspec_status
 
-.Gemfile.lock
+Gemfile.lock
 /vendor/

@@ -13,4 +13,4 @@ RSpec::Core::RakeTask.new(:spec)
 RSpec::Core::RakeTask.new(:"spec:integration") do |config|
 end
 
-task :default => :spec
+task default: :spec
