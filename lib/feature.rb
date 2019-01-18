@@ -32,7 +32,7 @@ module GitFlow
     # @option opts @see _set_defaults
     def initialize(branch_name, opts={})
       _set_defaults(opts)
-      @name = opts.fetch(:feature_name, branch_name.split(/-/)[2]) || branch_name
+      @name = opts.fetch(:feature_name, branch_name.split(/-/)[2]) || File.basename(branch_name)
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
 
       @git_repo = opts.fetch(:git_repo, nil) || $git_repo
