@@ -10,10 +10,6 @@ module MiqFlow
       MiqFlow::Settings.search_config_files()
       MiqFlow::Settings.process_environment_variables()
       MiqFlow::Settings.process_config_file(options['config'])
-      MiqFlow::Settings.update_log_level(:debug) if options['verbose'] == true
-      MiqFlow::Settings.update_log_level(:warn)  if options['quiet'] == true
-      MiqFlow::Settings.update_clear_tmp(options['cleanup'])
-      MiqFlow::Settings.update_workdir(options['workdir'])
 
       MiqFlow.validate(mode)
       MiqFlow.init()
@@ -28,11 +24,21 @@ module MiqFlow
         true
       end
 
-      class_option :verbose, type: :boolean, desc: 'Turn on verbose logging'
-      class_option :quiet, type: :boolean, desc: 'Only show errors and warnings'
+      class_option :verbose, type: :boolean, default: false, desc: 'Turn on verbose logging'
+      class_option :quiet, type: :boolean, default: false, desc: 'Only show errors and warnings'
+      class_option :silent, type: :boolean, default: false, desc: 'Do not output anything'
       class_option :cleanup, type: :boolean, desc: 'Clean up the working dir before exiting'
       class_option :workdir, type: :string, desc: 'Override the working directory'
       class_option :config, type: :string, alias: '-c', desc: 'Specify config file to load'
+
+      class_option :git_url, type: :string, desc: 'Git clone URL for remote repositories'
+      class_option :git_path, type: :string, desc: 'path to a local git repositories'
+      class_option :git_user, type: :string, desc: 'Username for remote repositories'
+      class_option :git_password, type: :string, desc: 'Password/token for remote repositories'
+
+      class_option :miq_url, type: :string, desc: 'ManageIQ API URL. (e.g. https://localhost/api)'
+      class_option :miq_user, type: :string, desc: 'ManageIQ API User. (default: admin)'
+      class_option :miq_password, type: :string, desc: 'Passwork/login-token for the ManageIQ API User'
 
       desc 'list branches|domains', 'Show summary information'
       subcommand 'list', MiqFlow::Cli::ListCli

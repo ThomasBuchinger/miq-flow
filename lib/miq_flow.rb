@@ -22,7 +22,7 @@ require 'miq_flow/manageiq'
 require 'miq_flow/domain'
 require 'miq_flow/feature'
 require 'miq_flow/miqflow'
-require 'miq_flow/cli/cli'
+require 'miq_flow/cli'
 require 'miq_flow/version'
 
 $settings = {}

@@ -1,7 +1,8 @@
 ---
 # Set logging level
+# If set to no_log, no log output will be generated
 # Default: info
-# Possible values: debug, info, warn, error, fatal
+# Possible values: debug, info, warn, error, fatal, no_log
 # log_level: info
 
 # git:

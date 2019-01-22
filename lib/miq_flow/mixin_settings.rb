@@ -41,7 +41,20 @@ module MiqFlow
       # Misc
       update_log_level(:debug) if truthy(ENV.fetch('VERBOSE', 'no'))
       update_log_level(:warn)  if truthy(ENV.fetch('QUIET', 'no'))
+      update_log_level(:no_log)  if truthy(ENV.fetch('SILENT', 'no'))
       update_clear_tmp(ENV['CLEAR_TMP'])
+      update_workdir(ENV['WORKDIR'])
+    end
+
+    def self.process_cli_flags(options={})
+      update_log_level(:debug)   if options['verbose'] == true
+      update_log_level(:warn)    if options['quiet'] == true
+      update_log_level(:no_log) if options['silent'] == true
+      update_clear_tmp(options['cleanup'])
+      update_workdir(options['workdir'])
+
+      update_git(options['git_url'], options['git_path'], options['git_user'], options['git_password'])
+      update_miq_api(options['miq_url'], options['miq_user'], options['miq_password'])
     end
 
     def self.process_config_file(path) # rubocop:disable Metrics/AbcSize
@@ -74,7 +87,7 @@ module MiqFlow
         warn: Logger::WARN,
         error: Logger::ERROR,
         fatal: Logger::FATAL,
-        unknown: Logger::UNKNOWN
+        no_log: Logger::UNKNOWN
       }
       return unless log_level.key?(level.to_sym)
 
