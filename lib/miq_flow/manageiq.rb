@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GitFlow
+module MiqFlow
   # Implements API calls to ManageIQ
   class ManageIQ
     include ApiMethods
@@ -18,7 +18,7 @@ module GitFlow
       data.each{ |d| $logger.debug("Found Domain: #{d['name']}") }
       text = data.map do |d|
         desc   = d['description'].to_s.empty? ? '' : " (#{d['description']})"
-        update = GitFlow.human_readable_time(timestamp: Time.parse(d['updated_on']))
+        update = MiqFlow.human_readable_time(timestamp: Time.parse(d['updated_on']))
         ena    = d['enabled'] ? 'yes' : 'no'
         "#{d['name']}#{desc}: ID=#{d['id']} Enabled=#{ena} Prio=#{d['priority']} Last Update=#{update}"
       end.join("\n")

@@ -2,7 +2,7 @@
 
 require 'pathname'
 require 'yaml'
-module GitFlow
+module MiqFlow
   module MiqMethods
     # ManageIQ related Methods, that are not plugable
     module MiqUtils

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GitFlow
+module MiqFlow
   class Error < StandardError
     EXIT_CODE = 2
   end

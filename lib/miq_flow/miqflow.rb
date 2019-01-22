@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # Global Methods
-module GitFlow
-  include GitFlow::Settings
-  include GitMethods
+module MiqFlow
+  include MiqFlow::Settings
+  include MiqFlow::GitMethods
 
   def self.init
     $logger.debug("Using Settings: #{$settings.to_yaml}")
@@ -40,7 +40,7 @@ module GitFlow
     validate_miq(d) if mode.include?(:miq)
     validate_api(d) if mode.include?(:api)
 
-    d[:count].zero? ? true : raise(GitFlow::ConfigurationError, "Invalid Configuration. #{d[:count]} offenses found.")
+    d[:count].zero? ? true : raise(MiqFlow::ConfigurationError, "Invalid Configuration. #{d[:count]} offenses found.")
   end
 
   def self.log_problem(data, message='')

@@ -3,13 +3,13 @@
 require 'pathname'
 require_relative 'domain.rb'
 
-module GitFlow
+module MiqFlow
   # A feature the top level object representing a feature-branch.
   # It includes aspects of handling git branches as well as ManageIQ Automate domains
   #
   class Feature
-    include GitFlow::GitMethods
-    include GitFlow::MiqMethods::MiqUtils
+    include MiqFlow::GitMethods
+    include MiqFlow::MiqMethods::MiqUtils
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
@@ -36,7 +36,7 @@ module GitFlow
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
 
       @git_repo = opts.fetch(:git_repo, nil) || $git_repo
-      raise GitFlow::GitError, 'Unable to find git repo' if @git_repo.nil?()
+      raise MiqFlow::GitError, 'Unable to find git repo' if @git_repo.nil?()
 
       _create_git(branch_name, @git_repo)
 
@@ -68,7 +68,7 @@ module GitFlow
       feature_level_params[:provider]     = opts[:provider]
       feature_level_params[:miq_import_method] = opts[:miq_import_method]
       domains = find_domain_files(@git_repo.workdir)
-      domains.map{ |dom| GitFlow::MiqDomain.create_from_file(dom.merge(feature_level_params)) }
+      domains.map{ |dom| MiqFlow::MiqDomain.create_from_file(dom.merge(feature_level_params)) }
     end
 
     def show_details

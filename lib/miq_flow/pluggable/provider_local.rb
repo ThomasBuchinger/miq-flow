@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
-module GitFlow
+module MiqFlow
   module MiqProvider
     # This provider assumes to be running on a ManageIQ Appliance
     class Appliance
       attr_accessor :container_name
 
-      def initialize(opts={}) end
+      def initialize(_opts={})
+        # fix rubocop issue #6678
+        true
+      end
 
       def import(tmpdir, fs_domain, miq_domain)
         commands = [
@@ -17,7 +20,7 @@ module GitFlow
         success = commands.all? do |cmd|
           system(cmd)
         end
-        raise GitFlow::ProviderError, 'Failed to Import to Appliance' unless success
+        raise MiqFlow::ProviderError, 'Failed to Import to Appliance' unless success
       end
     end
   end

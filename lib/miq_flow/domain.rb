@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module GitFlow
+module MiqFlow
   # Represents a single ManageIQ Automate Domain on disk
   class MiqDomain
-    include GitFlow::MiqMethods
+    include MiqFlow::MiqMethods
     # Mandatory parameters
     attr_accessor :name
     # Mandatory parameters with guessable defaults
@@ -41,7 +41,7 @@ module GitFlow
     # @see #find_domain_files
     #
     # @param [Hash] dom domain information
-    # @return [GitFlow::MiqDomain] new MiqDomain object
+    # @return [MiqFlow::MiqDomain] new MiqDomain object
     def self.create_from_file(dom)
       opts = {}
       opts[:export_name]   = dom[:domain_name]
@@ -70,10 +70,10 @@ module GitFlow
       @name = name
       _set_defaults(opts)
 
-      @miq_provider = GitFlow::MiqProvider::Noop.new      if opts[:provider_name] == 'noop'
-      @miq_provider = GitFlow::MiqProvider::Appliance.new if opts[:provider_name] == 'local'
-      @miq_provider = GitFlow::MiqProvider::Docker.new    if opts[:provider_name] == 'docker'
-      @miq_provider = GitFlow::MiqProvider::Noop.new      if @miq_provider.nil?
+      @miq_provider = MiqFlow::MiqProvider::Noop.new      if opts[:provider_name] == 'noop'
+      @miq_provider = MiqFlow::MiqProvider::Appliance.new if opts[:provider_name] == 'local'
+      @miq_provider = MiqFlow::MiqProvider::Docker.new    if opts[:provider_name] == 'docker'
+      @miq_provider = MiqFlow::MiqProvider::Noop.new      if @miq_provider.nil?
     end
 
     def prepare_import(domain_data, feature_data)
@@ -104,11 +104,11 @@ module GitFlow
       return if skip_deploy?(opts)
 
       prep_data = prepare_import(self, opts)
-      raise GitFlow::UnknownStrategyError, "Unknown Import method: #{@miq_import_method}" if prep_data[:error] == true
+      raise MiqFlow::UnknownStrategyError, "Unknown Import method: #{@miq_import_method}" if prep_data[:error] == true
 
       @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
       clean_data = cleanup_import(prep_data)
-      raise GitFlow::UnknownStrategyError, "Unknown cleanup method: #{@miq_import_method}" if clean_data[:error] == true
+      raise MiqFlow::UnknownStrategyError, "Unknown cleanup method: #{@miq_import_method}" if clean_data[:error] == true
     end
   end
 end
