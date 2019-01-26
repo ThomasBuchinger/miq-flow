@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'thor'
-require_relative 'list.rb'
+require_relative 'branch.rb'
+require_relative 'domain.rb'
 
 module MiqFlow
   # Implements common CLI methods
@@ -40,18 +41,11 @@ module MiqFlow
       class_option :miq_user, type: :string, desc: 'ManageIQ API User. (default: admin)'
       class_option :miq_password, type: :string, desc: 'Passwork/login-token for the ManageIQ API User'
 
-      desc 'list branches|domains', 'Show summary information'
-      subcommand 'list', MiqFlow::Cli::ListCli
+      desc 'branch', 'Branch commands'
+      subcommand 'branch', MiqFlow::Cli::BranchCli
 
-      desc 'inspect BRANCH', 'Show detailed information about this Feature-Branch'
-      option :short, type: :boolean, default: false, desc: 'Same as list'
-      def inspect(name)
-        cli_setup(options, %i[git])
-        feature = MiqFlow::Feature.new(name, {})
-        text = options[:short] ? feature.show_summary() : feature.show_details()
-        puts text
-        MiqFlow.tear_down()
-      end
+      desc 'domain', 'Domain commands'
+      subcommand 'domain', MiqFlow::Cli::DomainCli
 
       desc 'deploy BRANCH', 'Deploy a Feature Branch'
       option :name, desc: 'specify domain identifier (default: 3rd segment of NAME, separated by \'-\')'
