@@ -6,10 +6,8 @@ module MiqFlow
   # reasonable value is provided
   module Settings
     SEARCHPATH = [
-      'config.yml',
-      'config.yaml',
-      'miqflow.yml',
-      'miqflow.yaml',
+      '/etc/miqflow.yml',
+      '/etc/miqflow.yaml',
       File.expand_path('~/.miqflow.yml'),
       File.expand_path('~/.miqflow.yaml'),
       File.expand_path('~/.miqflow/config.yml'),

@@ -8,9 +8,11 @@ module MiqFlow
   # Implements common CLI methods
   module Cli
     def cli_setup(options={}, mode=[])
+      MiqFlow::Config.process_cli_flags(options) # Set log level first
       MiqFlow::Config.search_config_files()
       MiqFlow::Config.process_environment_variables()
       MiqFlow::Config.process_config_file(options['config'])
+      MiqFlow::Config.process_cli_flags(options) # And again for precedence
 
       MiqFlow.validate(mode)
       MiqFlow.init()
