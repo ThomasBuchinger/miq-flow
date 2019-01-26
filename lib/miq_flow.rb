@@ -18,6 +18,7 @@ require 'miq_flow/mixin_miq'
 require 'miq_flow/mixin_git'
 require 'miq_flow/mixin_api'
 require 'miq_flow/mixin_settings'
+require 'miq_flow/mixin_config'
 require 'miq_flow/manageiq'
 require 'miq_flow/domain'
 require 'miq_flow/feature'
@@ -28,4 +29,4 @@ require 'miq_flow/version'
 $settings = {}
 $settings[:miq] = {}
 $settings[:git] = {}
-MiqFlow::Settings.set_defaults()
+MiqFlow::Config.set_defaults()

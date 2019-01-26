@@ -8,9 +8,9 @@ module MiqFlow
   # Implements common CLI methods
   module Cli
     def cli_setup(options={}, mode=[])
-      MiqFlow::Settings.search_config_files()
-      MiqFlow::Settings.process_environment_variables()
-      MiqFlow::Settings.process_config_file(options['config'])
+      MiqFlow::Config.search_config_files()
+      MiqFlow::Config.process_environment_variables()
+      MiqFlow::Config.process_config_file(options['config'])
 
       MiqFlow.validate(mode)
       MiqFlow.init()

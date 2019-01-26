@@ -10,12 +10,12 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
 
   before(:each) do
     $settings = { git: {}, miq: {} }
-    MiqFlow::Settings.set_defaults()
-    MiqFlow::Settings.update_searchpath([], replace: true)
-    MiqFlow::Settings.update_log_level(:no_log)
+    MiqFlow::Config.set_defaults()
+    MiqFlow::Config.update_searchpath([], replace: true)
+    MiqFlow::Config.update_log_level(:no_log)
 
-    MiqFlow::Settings.update_git(git_url, nil, nil, nil)
-    MiqFlow::Settings.update_miq_api(miq_url, 'admin', 'smartvm')
+    MiqFlow::Config.update_git(git_url, nil, nil, nil)
+    MiqFlow::Config.update_miq_api(miq_url, 'admin', 'smartvm')
   end
 
   context 'General handling' do
@@ -51,7 +51,7 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
 
   context 'Git Commands', git: true do
     it 'exits 11 for invalid repositories' do
-      MiqFlow::Settings.update_git('https://github.com/invalid/not_a_repo.git', nil, nil, nil)
+      MiqFlow::Config.update_git('https://github.com/invalid/not_a_repo.git', nil, nil, nil)
       expect{ subject.invoke(:branch, ['list']) }.to raise_error(MiqFlow::GitError)
     end
   end

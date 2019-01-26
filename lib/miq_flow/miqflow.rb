@@ -3,6 +3,7 @@
 # Global Methods
 module MiqFlow
   include MiqFlow::Settings
+  include MiqFlow::Config
   include MiqFlow::GitMethods
 
   def self.init
