@@ -38,6 +38,9 @@ module MiqFlow
       class_option :git_path, type: :string, desc: 'path to a local git repositories'
       class_option :git_user, type: :string, desc: 'Username for remote repositories'
       class_option :git_password, type: :string, desc: 'Password/token for remote repositories'
+      class_option :git_separator, type: :string, desc: 'List of characters separating part of your ' \
+                                                       'branch naming convention'
+      class_option :git_index, type: :numeric, desc: 'Index the NAME par of your branch naming convenion'
 
       class_option :miq_url, type: :string, desc: 'ManageIQ API URL. (e.g. https://localhost/api)'
       class_option :miq_user, type: :string, desc: 'ManageIQ API User. (default: admin)'
@@ -55,7 +58,7 @@ module MiqFlow
       option :provider, desc: 'How to talk to ManageIQ (default: noop)'
       def deploy(branch)
         cli_setup(options, %i[git miq])
-        miq_domain = options[:name] || MiqFlow::Feature.name_from_branch(branch)
+        miq_domain = options[:name]
         provider   = options.fetch(:provider, 'default')
         prio       = options[:miq_priority]
 

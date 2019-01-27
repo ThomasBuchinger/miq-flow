@@ -13,6 +13,7 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
     MiqFlow::Config.set_defaults()
     MiqFlow::Config.update_searchpath([], replace: true)
     MiqFlow::Config.update_log_level(:no_log)
+    MiqFlow::Config.update_naming(nil, 2)
 
     MiqFlow::Config.update_git(git_url, nil, nil, nil)
     MiqFlow::Config.update_miq_api(miq_url, 'admin', 'smartvm')

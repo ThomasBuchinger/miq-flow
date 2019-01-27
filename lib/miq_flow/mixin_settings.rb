@@ -21,6 +21,7 @@ module MiqFlow
       update_workdir('auto')
 
       update_miq_api(nil, 'admin', nil)
+      update_naming(['-', '/'], 1)
     end
 
     def update_searchpath(path=[], replace: false)
@@ -67,6 +68,11 @@ module MiqFlow
       $settings[:git][:path] = path unless path.nil?
       $settings[:git][:user] = user unless user.nil?
       $settings[:git][:password] = password unless password.nil?
+    end
+
+    def update_naming(separators, index)
+      $settings[:naming_separator] = separators unless separators.nil? || separators.empty?
+      $settings[:naming_index] = index.to_i unless index.nil? || !index.respond_to?(:to_i)
     end
 
     def update_workdir(dir)

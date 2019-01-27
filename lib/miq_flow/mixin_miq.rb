@@ -27,8 +27,7 @@ module MiqFlow
         end
       end
 
-      def split_branch_name(name, separator=nil)
-        separator = ['-', '/'] if separator.nil?
+      def split_branch_name(name, separator)
         current_index = 0
         sub_str = []
         loop do
@@ -44,6 +43,22 @@ module MiqFlow
 
       def normalize_domain_name(name)
         name.gsub(INVALID_CHARS, '_')
+      end
+
+      def name_from_branch(name, index: nil, separator: nil)
+        # branch_map = {
+        #   'master': 'prod',
+        #   'develop': 'dev'
+        # }
+        # return branch_map[name] if branch_map.key?(name)
+        separator ||= $settings[:naming_separator]
+        index ||= $settings[:naming_index]
+        name = name.gsub("#{@remote_name}/", '') unless @remote_name.nil?
+
+        domain = split_branch_name(name, separator).fetch(index, nil)
+        return normalize_domain_name(domain) unless domain.nil? || domain.empty?
+
+        normalize_domain_name(name)
       end
     end
   end

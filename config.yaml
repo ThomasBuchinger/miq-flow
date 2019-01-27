@@ -20,7 +20,17 @@
   #  Specify credentials for the repository.
   #  NOTE: only HTTP Authenication is supported
   #  user: someone
-  #  password: <TOKEN>
+  #  pashsword: <TOKEN>
+
+  # Branch naming scheme
+  # This configures the naming scheme for your git branches (if you use one)
+  # and how MiqFlow derives a name for the domains imported from that branch.
+  # The default configuration matches: TYPE-NAME-optional-description 
+  # 
+  # characters used to separate part of yu naming convention
+  # separators: [ '-', '/' ]
+  # index of the NAME part in your naming convention (starts with 0)
+  # index: 1
 
 # miq:
   # url: https://localhost/api

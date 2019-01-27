@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-RSpec.describe 'MiqFlow::Feature' do
+RSpec.describe MiqFlow::MiqMethods::MiqUtils do
+  subject{ Object.new.extend(MiqFlow::MiqMethods::MiqUtils) }
   context 'name_from_branch()' do
-    subject{ MiqFlow::Feature }
+    let!(:reset_naming){ MiqFlow::Config.update_naming(['-', '/'], 1) }
     it 'defaults to TYPE-NAME-description syntax' do
       name = subject.name_from_branch('feature-f1-description')
       expect(name).to match('f1')

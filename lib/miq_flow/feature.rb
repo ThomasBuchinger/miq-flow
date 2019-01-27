@@ -10,7 +10,6 @@ module MiqFlow
   class Feature
     include MiqFlow::GitMethods
     include MiqFlow::MiqMethods::MiqUtils
-    extend MiqFlow::MiqMethods::MiqUtils
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
@@ -24,20 +23,8 @@ module MiqFlow
     def _set_defaults(opts={})
       @remote_name = opts.fetch(:remote_name, 'origin')
       @base        = opts.fetch(:base,        'master')
+      # unused
       @prefixes    = opts.fetch(:prefix,      [''])
-    end
-
-    def self.name_from_branch(name, index: 1, separator: nil)
-      # branch_map = {
-      #   'master': 'prod',
-      #   'develop': 'dev'
-      # }
-      # return branch_map[name] if branch_map.key?(name)
-
-      domain = split_branch_name(name, separator).fetch(index, nil)
-      return normalize_domain_name(domain) unless domain.nil? || domain.empty?
-
-      normalize_domain_name(name)
     end
 
     # Represents a feature-branch
@@ -46,7 +33,7 @@ module MiqFlow
     # @option opts @see _set_defaults
     def initialize(branch_name, opts={})
       _set_defaults(opts)
-      @name = opts.fetch(:feature_name, branch_name.split(/-/)[2]) || File.basename(branch_name)
+      @name = opts.fetch(:feature_name, nil) || name_from_branch(branch_name)
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
 
       @git_repo = opts.fetch(:git_repo, nil) || $git_repo

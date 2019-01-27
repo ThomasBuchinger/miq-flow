@@ -23,18 +23,24 @@ module MiqFlow
       update_log_level_with_flags(verbose: ENV['verbose'], quiet: ENV['quiet'], silent: ENV['silent'])
       update_clear_tmp(ENV['CLEAR_TMP'])
       update_workdir(ENV['WORKDIR'])
+      update_naming(ENV.fetch('git_separator', '').split(//), ENV['git_index'])
     end
 
     def self.process_cli_flags(options={})
+      # Git params
+      update_git(options['git_url'], options['git_path'], options['git_user'], options['git_password'])
+
+      # MIQ params
+      update_miq_api(options['miq_url'], options['miq_user'], options['miq_password'])
+
+      # Misc
       update_log_level_with_flags(verbose: options['verbose'], quiet: options['quiet'], silent: options['silent'])
       update_clear_tmp(options['cleanup'])
       update_workdir(options['workdir'])
-
-      update_git(options['git_url'], options['git_path'], options['git_user'], options['git_password'])
-      update_miq_api(options['miq_url'], options['miq_user'], options['miq_password'])
+      update_naming(options.fetch('git_separator', '').split(//), options['git_index'])
     end
 
-    def self.process_config_file(path) # rubocop:disable Metrics/AbcSize
+    def self.process_config_file(path)
       return unless path.kind_of?(String) && File.file?(path)
 
       $logger.info("Processing config file: #{path}")
@@ -42,11 +48,17 @@ module MiqFlow
       git_conf = conf['git'] || {}
       miq_conf = conf['miq'] || {}
 
+      # Git params
+      update_git(git_conf['url'], git_conf['path'], git_conf['user'], git_conf['password'])
+
+      # MIQ params
+      update_miq_api(miq_conf['url'], miq_conf['user'], miq_conf['password'])
+
+      # Misc
       update_log_level(conf['log_level'])
       update_clear_tmp(conf['clear_tmp'])
-      update_git(git_conf['url'], git_conf['path'], git_conf['user'], git_conf['password'])
-      update_miq_api(miq_conf['url'], miq_conf['user'], miq_conf['password'])
       update_workdir(conf['workdir'])
+      update_naming(git_conf['seperator'], git_conf['index'])
     end
   end
 end
