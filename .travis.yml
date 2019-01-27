@@ -23,12 +23,11 @@ before_install:
   - script/prepare_manageiq.sh
 jobs:
   include: 
-    name: 'Default build'
-    script:
+  - script:
       - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
       - bundle install --with development
       - bundle exec rake travis
-    stage: integration
+  - stage: integration
     if: env(SUITE) == integration
     script:
       - rake install:local
