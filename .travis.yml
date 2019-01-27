@@ -2,8 +2,6 @@ language: ruby
 sudo: required
 services:
   - docker
-global:
-  - GIT_URL=https://github.com/ThomasBuchinger/automate-example
 matrix:
   include:
     - name: "Gaprindashvili"
@@ -17,7 +15,7 @@ matrix:
       env: TAG=latest
     - name: "Hammer + Integration"
       rvm: 2.4
-      env: TAG=latest-hammer
+      env: TAG=latest-hammer GIT_URL=https://github.com/ThomasBuchinger/automate-example
       stage: integration
       script:
       - script/prepare_manageiq.sh
