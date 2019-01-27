@@ -17,19 +17,14 @@ matrix:
       env: TAG=latest
     - name: "Hammer + Integration"
       rvm: 2.4
-      env: TAG=latest-hammer SUITE=integration
-
-before_install:
-  - script/prepare_manageiq.sh
-jobs:
-  include: 
-  - script:
-      - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
-      - bundle install --with development
-      - bundle exec rake travis
-  - stage: integration
-#    if: env(SUITE) == integration
-    script:
+      env: TAG=latest-hammer
+      stage: integration
+      script:
+      - script/prepare_manageiq.sh
       - rake install:local
       - miq-flow deploy feature-1-f1 --provider docker --git-index 2
       - ./script/verify_import.sh
+script:
+  - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
+  - bundle install --with development
+  - bundle exec rake travis

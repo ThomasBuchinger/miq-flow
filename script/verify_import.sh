@@ -1,7 +1,6 @@
 #!/bin/bash
-DOMAIN=${DOMAIN-feature_f1_buc}
+DOMAIN=${DOMAIN-feat_f1_buc}
 SUITE=${SUITE-default}
-if [[ $SUITE != "integration" ]]; then exit 0; fi
 
 RESPONSE=$(curl -k --user admin:smartvm "https://localhost:8443/api/automate/${DOMAIN}?depth=-1&attributes=klass,domain_fnname")
 
