@@ -2,6 +2,8 @@ language: ruby
 sudo: required
 services:
   - docker
+global:
+  - GIT_URL=https://github.com/ThomasBuchinger/automate-example
 matrix:
   include:
     - name: "Gaprindashvili"
@@ -19,11 +21,16 @@ matrix:
 
 before_install:
   - script/prepare_manageiq.sh
-  - ruby -ryaml -e "c={'log_level'=>'debug', 'git'=>{'url'=>'https://github.com/ThomasBuchinger/automate-example'}}; puts c.to_yaml" > config.yaml
-script:
-  - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
-  - rake install:local
-  - miq-flow deploy feature-1-f1 --provider docker
-  - ./script/verify_import.sh
-  - bundle install --with development
-  - bundle exec rake travis
+jobs:
+  include: 
+    name: 'Default build'
+    script:
+      - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
+      - bundle install --with development
+      - bundle exec rake travis
+    stage: integration
+    if: env(SUITE) == integration
+    script:
+      - rake install:local
+      - miq-flow deploy feature-1-f1 --provider docker --git-index 2
+      - ./script/verify_import.sh
