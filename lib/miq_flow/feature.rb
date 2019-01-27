@@ -10,6 +10,7 @@ module MiqFlow
   class Feature
     include MiqFlow::GitMethods
     include MiqFlow::MiqMethods::MiqUtils
+    extend MiqFlow::MiqMethods::MiqUtils
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
@@ -21,9 +22,22 @@ module MiqFlow
     # @option opts [String] :base('master')
     # @option opts [Array<String>]        :prefix(feature, fix)
     def _set_defaults(opts={})
-      @remote_name       = opts.fetch(:remote_name, 'origin')
-      @base              = opts.fetch(:base,        'master')
-      @prefixes          = opts.fetch(:prefix,      %w[feature fix])
+      @remote_name = opts.fetch(:remote_name, 'origin')
+      @base        = opts.fetch(:base,        'master')
+      @prefixes    = opts.fetch(:prefix,      [''])
+    end
+
+    def self.name_from_branch(name, index: 1, separator: nil)
+      # branch_map = {
+      #   'master': 'prod',
+      #   'develop': 'dev'
+      # }
+      # return branch_map[name] if branch_map.key?(name)
+
+      domain = split_branch_name(name, separator).fetch(index, nil)
+      return normalize_domain_name(domain) unless domain.nil? || domain.empty?
+
+      normalize_domain_name(name)
     end
 
     # Represents a feature-branch

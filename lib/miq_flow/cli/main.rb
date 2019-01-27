@@ -55,7 +55,7 @@ module MiqFlow
       option :provider, desc: 'How to talk to ManageIQ (default: noop)'
       def deploy(branch)
         cli_setup(options, %i[git miq])
-        miq_domain = options[:name] || branch.split(/-/)[2] || branch
+        miq_domain = options[:name] || MiqFlow::Feature.name_from_branch(branch)
         provider   = options.fetch(:provider, 'default')
         prio       = options[:miq_priority]
 
