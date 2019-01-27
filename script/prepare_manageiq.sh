@@ -1,8 +1,7 @@
 #!/bin/bash
 CONTAINER_NAME=${CONTAINER_NAME-manageiq}
-TAG=${TAG-hammer-1-rc1}
+TAG=${TAG-latest-hammer}
 SUITE=${SUITE-default}
-if [[ $SUITE != "integration" ]]; then exit 0; fi
 
 docker rm -f $CONTAINER_NAME
 docker pull manageiq/manageiq:$TAG

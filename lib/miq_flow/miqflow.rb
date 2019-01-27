@@ -3,6 +3,7 @@
 # Global Methods
 module MiqFlow
   include MiqFlow::Settings
+  include MiqFlow::Config
   include MiqFlow::GitMethods
 
   def self.init
@@ -23,7 +24,7 @@ module MiqFlow
   end
 
   def self.tear_down
-    clean_tmp_dir() unless $settings[:clear_tmp]
+    clean_tmp_dir() if $settings[:clear_tmp]
   end
 
   def self.clean_tmp_dir

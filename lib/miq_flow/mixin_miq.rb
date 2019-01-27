@@ -7,6 +7,7 @@ module MiqFlow
     # ManageIQ related Methods, that are not plugable
     module MiqUtils
       DOMAIN_FILE_NAME = '__domain__.yaml'
+      INVALID_CHARS = /[^A-Za-z0-9_\-\.$]/.freeze
 
       # Find and read Automate domains
       # Search PATH for __domain__.yaml files, indicating a ManageIQ Automate Domain
@@ -24,6 +25,40 @@ module MiqFlow
           $logger.debug("Found domain at: #{h[:relative_path]}")
           h
         end
+      end
+
+      def split_branch_name(name, separator)
+        current_index = 0
+        sub_str = []
+        loop do
+          index = separator.map{ |s| name.index(s, current_index) }.compact.min
+          length = (index || name.length) - current_index
+          sub_str << name.slice(current_index, length)
+          break if index.nil?
+
+          current_index = index + 1
+        end
+        sub_str
+      end
+
+      def normalize_domain_name(name)
+        name.gsub(INVALID_CHARS, '_')
+      end
+
+      def name_from_branch(name, index: nil, separator: nil)
+        # branch_map = {
+        #   'master': 'prod',
+        #   'develop': 'dev'
+        # }
+        # return branch_map[name] if branch_map.key?(name)
+        separator ||= $settings[:naming_separator]
+        index ||= $settings[:naming_index]
+        name = name.gsub("#{@remote_name}/", '') unless @remote_name.nil?
+
+        domain = split_branch_name(name, separator).fetch(index, nil)
+        return normalize_domain_name(domain) unless domain.nil? || domain.empty?
+
+        normalize_domain_name(name)
       end
     end
   end
