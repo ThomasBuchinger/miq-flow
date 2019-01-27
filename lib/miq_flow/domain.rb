@@ -50,7 +50,7 @@ module MiqFlow
       opts[:provider_name] = dom[:provider]
       opts[:branch_name]   = dom[:branch_name]
 
-      new_name = "feature_#{dom[:feature_name]}_#{opts[:export_name]}"
+      new_name = "feat_#{dom[:feature_name]}_#{opts[:export_name]}"
       opts.reject!{ |_, value| value.nil? }
       self.new(new_name, opts)
     end

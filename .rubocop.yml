@@ -12,6 +12,10 @@ Metrics/MethodLength:
   Max: 50
 Metrics/AbcSize:
   Max: 20
+  Exclude:
+    # mixin_config tends to overshoot, but is 
+    # still easily readable
+    - lib/miq_flow/mixin_config.rb
 
 Layout/SpaceBeforeBlockBraces:
   EnforcedStyle: no_space

@@ -10,12 +10,13 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
 
   before(:each) do
     $settings = { git: {}, miq: {} }
-    MiqFlow::Settings.set_defaults()
-    MiqFlow::Settings.update_searchpath([], replace: true)
-    MiqFlow::Settings.update_log_level(:unknown)
+    MiqFlow::Config.set_defaults()
+    MiqFlow::Config.update_searchpath([], replace: true)
+    MiqFlow::Config.update_log_level(:no_log)
+    MiqFlow::Config.update_naming(nil, 2)
 
-    MiqFlow::Settings.update_git(git_url, nil, nil, nil)
-    MiqFlow::Settings.update_miq_api(miq_url, 'admin', 'smartvm')
+    MiqFlow::Config.update_git(git_url, nil, nil, nil)
+    MiqFlow::Config.update_miq_api(miq_url, 'admin', 'smartvm')
   end
 
   context 'General handling' do
@@ -27,20 +28,22 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
     end
     it 'invalid git configuraion: exits with 3' do
       $settings[:git] = {}
-      expect{ subject.invoke(:list, ['branches']) }.to raise_error(MiqFlow::ConfigurationError)
+      expect{ subject.invoke(:branch, ['list']) }.to raise_error(MiqFlow::ConfigurationError)
     end
     it 'invalid api configuration: exiths with 3' do
       $settings[:miq] = {}
-      expect{ subject.invoke(:list, ['domains']) }.to raise_error(MiqFlow::ConfigurationError)
+      expect{ subject.invoke(:domain, ['list']) }.to raise_error(MiqFlow::ConfigurationError)
     end
   end
 
   context 'Basic Commands', git: true do
-    it 'list git' do
-      expect{ subject.invoke(:list, ['branches']) }.to output(%r{origin/feature-1-f1}).to_stdout
+    it 'branch list' do
+      expect{ subject.invoke(:branch, ['list']) }.to output(%r{origin/feature-1-f1}).to_stdout
     end
-    it 'inspect' do
-      expect{ subject.invoke(:inspect, ['feature-1-f1']) }.to output(/Feature: f1 on branch feature-1-f1/).to_stdout
+    it 'branch inspect' do
+      expect do
+        subject.invoke(:branch, ['inspect', 'feature-1-f1'])
+      end.to output(/Feature: f1 on branch feature-1-f1/).to_stdout
     end
     it 'deploy - noop' do
       expect{ subject.invoke(:deploy, ['feature-1-f1', '--provider', 'noop']) }.to_not raise_error
@@ -49,10 +52,9 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
 
   context 'Git Commands', git: true do
     it 'exits 11 for invalid repositories' do
-      MiqFlow::Settings.update_git('https://github.com/invalid/not_a_repo.git', nil, nil, nil)
-      expect{ subject.invoke(:list, ['branches']) }.to raise_error(MiqFlow::GitError)
+      MiqFlow::Config.update_git('https://github.com/invalid/not_a_repo.git', nil, nil, nil)
+      expect{ subject.invoke(:branch, ['list']) }.to raise_error(MiqFlow::GitError)
     end
-    it{ is_expected().to be_truthy }
   end
 
   context 'Rake Commands: Docker', git: true, docker: true do
@@ -62,8 +64,8 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
   end
 
   shared_examples_for 'ManageIQ API' do
-    it 'list miq' do
-      expect{ subject.invoke(:list, ['domains']).to_output(/ManageIQ/).to_stdout }
+    it 'domain list' do
+      expect{ subject.invoke(:domain, ['list']).to_output(/ManageIQ/).to_stdout }
     end
   end
 
@@ -86,19 +88,19 @@ RSpec.describe MiqFlow::Cli::MainCli, integration: true do
     it_behaves_like('ManageIQ API')
     it 'handles 500 codes' do
       server_stub.to_return(status: 500)
-      expect{ subject.invoke(:list, ['domains']) }.to raise_error(MiqFlow::BadResponseError)
+      expect{ subject.invoke(:domain, ['list']) }.to raise_error(MiqFlow::BadResponseError)
     end
     it 'handles invalid Credentials' do
       server_stub.to_return(status: 403)
-      expect{ subject.invoke(:list, ['domains']) }.to raise_error(MiqFlow::BadResponseError)
+      expect{ subject.invoke(:domain, ['list']) }.to raise_error(MiqFlow::BadResponseError)
     end
     it 'handles connection reset' do
       server_stub.to_raise(Errno::ECONNREFUSED)
-      expect{ subject.invoke(:list, ['domains']) }.to raise_error(MiqFlow::ConnectionError)
+      expect{ subject.invoke(:domain, ['list']) }.to raise_error(MiqFlow::ConnectionError)
     end
     it 'handles timeout' do
       server_stub.to_timeout
-      expect{ subject.invoke(:list, ['domains']) }.to raise_error(MiqFlow::ConnectionError)
+      expect{ subject.invoke(:domain, ['list']) }.to raise_error(MiqFlow::ConnectionError)
     end
   end
 end

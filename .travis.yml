@@ -15,15 +15,14 @@ matrix:
       env: TAG=latest
     - name: "Hammer + Integration"
       rvm: 2.4
-      env: TAG=latest-hammer SUITE=integration
-
-before_install:
-  - script/prepare_manageiq.sh
-  - ruby -ryaml -e "c={'log_level'=>'debug', 'git'=>{'url'=>'https://github.com/ThomasBuchinger/automate-example'}}; puts c.to_yaml" > config.yaml
+      env: TAG=latest-hammer GIT_URL=https://github.com/ThomasBuchinger/automate-example
+      stage: integration
+      script:
+      - script/prepare_manageiq.sh
+      - rake install:local
+      - miq-flow deploy feature-1-f1 --provider docker --git-index 2
+      - ./script/verify_import.sh
 script:
   - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
-  - rake install:local
-  - miq-flow deploy feature-1-f1 --provider docker
-  - ./script/verify_import.sh
   - bundle install --with development
   - bundle exec rake travis

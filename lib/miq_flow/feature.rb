@@ -21,9 +21,10 @@ module MiqFlow
     # @option opts [String] :base('master')
     # @option opts [Array<String>]        :prefix(feature, fix)
     def _set_defaults(opts={})
-      @remote_name       = opts.fetch(:remote_name, 'origin')
-      @base              = opts.fetch(:base,        'master')
-      @prefixes          = opts.fetch(:prefix,      %w[feature fix])
+      @remote_name = opts.fetch(:remote_name, 'origin')
+      @base        = opts.fetch(:base,        'master')
+      # unused
+      @prefixes    = opts.fetch(:prefix,      [''])
     end
 
     # Represents a feature-branch
@@ -32,7 +33,7 @@ module MiqFlow
     # @option opts @see _set_defaults
     def initialize(branch_name, opts={})
       _set_defaults(opts)
-      @name = opts.fetch(:feature_name, branch_name.split(/-/)[2]) || File.basename(branch_name)
+      @name = opts.fetch(:feature_name, nil) || name_from_branch(branch_name)
       $logger.debug("Creating Feature: branch=#{branch_name} domain=#{@name}")
 
       @git_repo = opts.fetch(:git_repo, nil) || $git_repo

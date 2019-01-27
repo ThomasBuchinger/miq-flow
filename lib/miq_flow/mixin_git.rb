@@ -108,7 +108,7 @@ module MiqFlow
     # @param [String] git remote name used to construct branch name. default: origin
     # @return [Rugged::Branch] all remote pranches starting with prefix
     def self.get_remote_branches(prefixes=nil, remote=nil)
-      prefixes    = prefixes || @prefix || %w[feature fix master]
+      prefixes    = prefixes || @prefix || ['']
       remote_name = remote || @remote || 'origin'
       repo        = @git_repo || $git_repo
       repo.branches.each(:remote).select do |remote_branch|
