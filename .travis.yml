@@ -26,3 +26,5 @@ script:
   - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
   - bundle install --with development
   - bundle exec rake travis
+after_script:
+  - bundle exec rake coveralls:push

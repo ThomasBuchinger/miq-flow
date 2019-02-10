@@ -3,6 +3,9 @@
 require 'bundler/gem_tasks'
 require 'rubocop/rake_task'
 require 'rspec/core/rake_task'
+require 'coveralls/rake/task'
+
+Coveralls::RakeTask.new
 
 RuboCop::RakeTask.new
 
