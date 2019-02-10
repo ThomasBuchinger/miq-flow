@@ -1,5 +1,7 @@
 # ManageIQ Workflow Automate Importer
-[![Build Status](https://travis-ci.org/ThomasBuchinger/automate-gitflow.svg?branch=master)](https://travis-ci.org/ThomasBuchinger/automate-gitflow)
+[![Build Status](https://travis-ci.org/ThomasBuchinger/miq-flow.svg?branch=master)](https://travis-ci.org/ThomasBuchinger/miq-flow)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7c4a493f5d03a662bc27/maintainability)](https://codeclimate.com/github/ThomasBuchinger/miq-flow/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/7c4a493f5d03a662bc27/test_coverage)](https://codeclimate.com/github/ThomasBuchinger/miq-flow/test_coverage)
 
 This command line utility implements a git-based branching workflow on top of the default ManageIQ Automate Import scripts.
 

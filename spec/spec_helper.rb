@@ -3,6 +3,8 @@
 require 'bundler/setup'
 require 'rspec'
 require 'webmock/rspec'
+
+require_relative 'coverage_helper.rb'
 require 'miq_flow'
 
 $LOAD_PATH.unshift(File.join(__dir__, '..', 'lib'))

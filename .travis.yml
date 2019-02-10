@@ -22,7 +22,14 @@ matrix:
       - rake install:local
       - miq-flow deploy feature-1-f1 --provider docker --git-index 2
       - ./script/verify_import.sh
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 script:
   - bundle check # ManageIQ Container/Appliance needs to satisfy all dependencies
   - bundle install --with development
   - bundle exec rake travis
+after_script:
+  - bundle exec rake coveralls:push
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
