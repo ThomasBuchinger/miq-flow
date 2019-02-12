@@ -53,7 +53,7 @@ module MiqFlow
       subcommand 'domain', MiqFlow::Cli::DomainCli
 
       desc 'deploy BRANCH', 'Deploy a Feature Branch'
-      option :name, desc: 'specify domain identifier (default: 3rd segment of NAME, separated by \'-\')'
+      option :name, desc: 'specify domain identifier (default: 2nd segment of NAME, separated by \'-\')'
       option :priority, type: :numeric, desc: 'Not-yet-implemented'
       option :provider, desc: 'How to talk to ManageIQ (default: noop)'
       def deploy(branch)
