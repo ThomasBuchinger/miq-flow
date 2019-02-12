@@ -1,5 +1,12 @@
 # Changelog
 
+## [unreleased] 2019-??-??
+### Added
+- Add user guide (#39)
+
+### Fixed
+- Updated outdated information in  README (#39)
+
 ## [1.0.0-rc1] 2019-01-28
 ### Added
 - Initial commit
