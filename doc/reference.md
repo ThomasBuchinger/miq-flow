@@ -1,7 +1,7 @@
 # Reference
 > WIP: Please stand by
 
-## Motivation (own file)
+## Motivation
 ### starting point?
 
 ### Problems
@@ -18,13 +18,19 @@
 
 
 ## Proxy Support
-Use http_proxy ENV var
+Support for operating system level proxy has to be compiled in the git library (`libgit2`). This work is ongoing upstream and depends on the exact version numbers involved. Currently only Hammer seems to support Proxies.
+* Hammer: Configure `http_proxy` ENV variable. (`HTTP_PROXY`, `HTTPS_PROXY` and `https_proxy` variables seem no to be honored)
+* Gaprindashvili: not supported
+* Fine: not supported
+
+## SSH Support
+Support for SSH as transport protocol is not available on ManageIQ, as it has to be compiled in the git library (`libgit2`).
 
 ## Confiuration Options
 ### Use a local repository
 
 ## Provider
-Technically Miq-Flow also needs know, how to access to ManageIQ's `evm:automate:import` rake task, in addition to the git repository and  
+Technically Miq-Flow also needs know, how to access to ManageIQ's `evm:automate:import` rake task, in addition to the git repository.  
 Since we are running on the appliance and the only real provider is local, we do not need to configure it
 
 ## Naming conventions
