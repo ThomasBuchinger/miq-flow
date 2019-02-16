@@ -11,7 +11,7 @@ at_exit do
   if $ERROR_INFO
     # Find the correct ExitCode
     # and do not print the stack trace
-    $ERROR_INFO.set_backtrace(nil)
+    $ERROR_INFO.set_backtrace(nil) unless !$settings.nil? && $settings.fetch(:log_level, nil) == :debug
     exit($ERROR_INFO.class::EXIT_CODE) if $ERROR_INFO.kind_of?(MiqFlow::Error)
     exit 1
   end

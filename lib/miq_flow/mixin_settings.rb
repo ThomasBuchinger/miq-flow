@@ -53,7 +53,7 @@ module MiqFlow
       $logger = Logger.new(STDERR) if $logger.nil?
       $logger.level = log_level[level.to_sym]
 
-      # This is just for ducomentation, when dumping the config
+      # This is just for documentation, when dumping the config
       $settings[:log_level] = level
     end
 
