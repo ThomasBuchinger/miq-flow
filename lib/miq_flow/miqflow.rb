@@ -59,6 +59,11 @@ module MiqFlow
     valid
   end
 
+  def self.validate_ruby(valid)
+    # Ruby 2.3 was available since Euwe, this should be fine
+    log_problem(valid, 'Ruby > 2.3.0: Hash#dig not available') unless Hash.method_defined?(:dig)
+  end
+
   def self.validate_git(valid)
     log_problem(valid, 'No git repository specified') if $settings[:git][:url].nil? && $settings[:git][:path].nil?
   end
