@@ -3,9 +3,13 @@
 ## [unreleased] 2019-??-??
 ### Added
 - Add user guide (#39)
+- Print error stack trace in verbose mode (#46)
 
 ### Fixed
 - Updated outdated information in  README (#39)
+- Honor Domains priority during import (#44)
+- Fix display error if domains are named similar (#29)
+
 
 ## [1.0.0-rc1] 2019-01-28
 ### Added

@@ -54,8 +54,12 @@ module MiqFlow
       @git_repo.checkout(@git_branch)
       paths = get_diff_paths()
       deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir }
+      # The import does not honor the priority setting in the domain => import from lowest to highest priority
+      @miq_domain.sort!{ |dom1, dom2| dom1.miq_priority <=> dom2.miq_priority }
       @miq_domain.each do |domain|
         $logger.info("Deploying: #{domain.name}")
+        $logger.debug("  Directory: #{domain.export_dir}/#{domain.export_name}")
+        $logger.debug("  Priority: #{domain.miq_priority}")
         domain.deploy(deploy_opts.dup)
       end
     end

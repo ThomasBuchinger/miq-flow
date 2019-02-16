@@ -34,7 +34,7 @@ module MiqFlow
     # Filter changed files in this Automate domain from the list of all files
     #
     def _limit_changeset(files)
-      @changeset = files.select{ |f| f.include?(@export_name) && f.include?(@export_dir) }
+      @changeset = files.select{ |f| f.include?("#{@export_name}#{File::SEPARATOR}") && f.include?(@export_dir) }
     end
 
     # create a new MiqDomain Object from information on the file system
@@ -49,6 +49,7 @@ module MiqFlow
       opts[:import_method] = dom[:import_method]
       opts[:provider_name] = dom[:provider]
       opts[:branch_name]   = dom[:branch_name]
+      opts[:miq_priority]  = dom.dig(:domain, 'object', 'attributes', 'priority')
 
       new_name = "feat_#{dom[:feature_name]}_#{opts[:export_name]}"
       opts.reject!{ |_, value| value.nil? }

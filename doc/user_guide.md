@@ -148,7 +148,6 @@ Feature: test on branch feature-test-follow-user-guide
 # files miq-flow is going to import
 feat_test_buc
   automate/buc/Control/Email.class/__methods__/create_accounting_entry_on_vm_dedection.rb
-  automate/buc_lib/GenericObect/AccountingEntry.class/__methods__/create_accounting_entry.rb
 feat_test_buc_lib
   automate/buc_lib/GenericObect/AccountingEntry.class/__methods__/create_accounting_entry.rb
 ```
