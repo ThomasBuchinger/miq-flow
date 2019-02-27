@@ -4,6 +4,7 @@
 ### Added
 - Add user guide (#39)
 - Print error stack trace in verbose mode (#46)
+- Add PR template (#49)
 
 ### Fixed
 - Updated outdated information in  README (#39)
