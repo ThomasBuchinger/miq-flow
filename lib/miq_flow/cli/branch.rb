@@ -38,26 +38,35 @@ module MiqFlow
         feature.miq_domain.each do |domain|
           paths = domain._limit_changeset(changeset)
 
-          paths.each do |path|
-            data[domain.name] = {}
-            data[domain.name][path] = {api: {}, file: {}}
+          # find file data
+          file_data = paths.map{ |path| { path: path, content: File.read(File.join(feature.git_workdir, path))} }
 
-            data[domain.name][path][:file] = { path: path, content: File.read(File.join(feature.git_workdir, path))  }
-          end
-
+          # find API data
           api_obj = domain.changeset_as_uri(paths)
           api_data = api_obj.map do |o| 
             q = api.query_automate_model(o[:class], type: :method, attributes: %i[name data])
-            data[domain.name][o[:path]][:api] = {raw: q, path: o[:path], content: q[:data]}
+            if q.length != 1
+              $logger.warn("Unable to find method via API: #{o[:path]}") if q.length == 0
+              $logger.warn("Ambigiuos method name: #{o[:path]}") if q.length > 1
+              next
+            end
+
+            {raw: q[0], path: o[:path], content: q[0]['data']}
           end
 
-          text << {api: api_data, file: file_data}
-          #text << path
-          #dom = ManageIQ.get_domain_content(path)
-          #feat = Feature.get_file_content(patth)
-          #text << Rugged.diff(feat, dom )
+          # group_by_path
+          data[domain.name] =  file_data.concat(api_data).group_by{|e| File.basename(e[:path]) }
+          text << data[domain.name].map do |p, d| 
+            Rugged::Patch.from_strings(
+              d.fetch(0, {})[:content],
+              d.fetch(1, {})[:content],
+              {old_path: "git/#{p}", new_path: "api/#{p}"}
+            ).to_s
+          end
         end
         puts data.inspect
+        puts "------"
+        puts text.flatten
         MiqFlow.tear_down()
       end
       
