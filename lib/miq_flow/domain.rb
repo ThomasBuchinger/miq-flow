@@ -4,6 +4,7 @@ module MiqFlow
   # Represents a single ManageIQ Automate Domain on disk
   class MiqDomain
     include MiqFlow::MiqMethods
+    include MiqFlow::MiqMethods::MiqUtils
     # Mandatory parameters
     attr_accessor :name
     # Mandatory parameters with guessable defaults
@@ -35,6 +36,15 @@ module MiqFlow
     #
     def _limit_changeset(files)
       @changeset = files.select{ |f| f.include?("#{@export_name}#{File::SEPARATOR}") && f.include?(@export_dir) }
+    end
+
+    def changeset_as_uri(files)
+      files.dup
+           .map{ |f| f.gsub(/^#{@export_dir}\/#{@export_name}/, name_from_branch(@name)) }
+           .map{ |f| method_to_uri(f) }
+           .map{ |f| instance_to_uri(f) }
+           .map{ |f| class_to_uri(f) }
+           .map{ |f| namespace_to_uri(f) }
     end
 
     # create a new MiqDomain Object from information on the file system

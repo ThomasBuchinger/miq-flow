@@ -60,6 +60,34 @@ module MiqFlow
 
         normalize_domain_name(name)
       end
+
+      def method_to_uri(path)
+        return path unless path.include?('__methods__') && path.include?('.rb')
+
+
+        index = path.index(".class#{File::SEPARATOR}__methods__")
+        class_uri = path[0...index]
+        name = path[(index+19)..-4]
+        { class: class_uri, name: name, klass: :method, path: path }
+      end
+      def instance_to_uri(path)
+        return path unless path.include?('.yaml') &&  path.include?('__methods__')
+
+        # path.gsub(".class#{File::SEPARATOR}__methods__", '').chomp('.yaml')
+        nil
+      end
+      def class_to_uri(path)
+        return path unless path.include?('__class__.yaml')
+
+        # path.gsub(".class#{File::SEPARATOR}", '').chomp('.rb')
+        nil
+      end
+      def namespace_to_uri(path)
+        return path unless path.include?('.rb')
+
+        # path.gsub(".class#{File::SEPARATOR}__methods__", '').chomp('.rb')
+        nil
+      end
     end
   end
 end

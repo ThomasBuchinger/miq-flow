@@ -13,7 +13,7 @@ module MiqFlow
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
-    attr_reader   :git_repo
+    attr_reader   :git_repo, :git_workdir
 
     # Sets up a bunch of instance variables
     #
@@ -41,9 +41,10 @@ module MiqFlow
 
       _create_git(branch_name, @git_repo)
 
-      method   = opts.fetch(:miq_import_method, 'partial')
-      provider = opts.fetch(:provider,          'default')
-      @miq_domain = discover_domains(provider: provider, miq_import_method: method)
+      method       = opts.fetch(:miq_import_method, 'partial')
+      provider     = opts.fetch(:provider,          'default')
+      @git_workdir = @git_repo.workdir() 
+      @miq_domain  = discover_domains(provider: provider, miq_import_method: method)
     end
 
     # Deploys the feature to ManageIQ
@@ -53,7 +54,7 @@ module MiqFlow
     def deploy
       @git_repo.checkout(@git_branch)
       paths = get_diff_paths()
-      deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir }
+      deploy_opts = { changeset: paths, git_workdir: @git_workdir }
       # The import does not honor the priority setting in the domain => import from lowest to highest priority
       @miq_domain.sort!{ |dom1, dom2| dom1.miq_priority <=> dom2.miq_priority }
       @miq_domain.each do |domain|
