@@ -10,7 +10,7 @@
 - Updated outdated information in  README (#39)
 - Honor Domains priority during import (#44)
 - Fix display error if domains are named similar (#29)
-
+- Fix import bug, for methods with changed meta data (#48)
 
 ## [1.0.0-rc1] 2019-01-28
 ### Added
