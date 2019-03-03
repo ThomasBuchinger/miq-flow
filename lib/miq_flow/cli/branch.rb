@@ -35,6 +35,7 @@ module MiqFlow
         api = MiqFlow::ManageIQ.new
         feature = MiqFlow::Feature.new(name, {})
         changeset = feature.get_diff_paths()
+        feature.checkout()
         feature.miq_domain.each do |domain|
           paths = domain._limit_changeset(changeset)
 
@@ -45,10 +46,11 @@ module MiqFlow
           api_obj = domain.changeset_as_uri(paths)
           api_data = api_obj.map do |o| 
             q = api.query_automate_model(o[:class], type: :method, attributes: %i[name data])
+            q.select!{|m| m['name'] == o[:name]  }
             if q.length != 1
               $logger.warn("Unable to find method via API: #{o[:path]}") if q.length == 0
               $logger.warn("Ambigiuos method name: #{o[:path]}") if q.length > 1
-              next
+              next {raw: '', path: 'not found', content: ''}
             end
 
             {raw: q[0], path: o[:path], content: q[0]['data']}

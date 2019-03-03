@@ -40,7 +40,7 @@ module MiqFlow
 
     def changeset_as_uri(files)
       files.dup
-           .map{ |f| f.gsub(/^#{@export_dir}\/#{@export_name}/, name_from_branch(@name)) }
+           .map{ |f| f.gsub(%r(^#{@export_dir}\/#{@export_name}), name_from_branch(@name)) }
            .map{ |f| method_to_uri(f) }
            .map{ |f| instance_to_uri(f) }
            .map{ |f| class_to_uri(f) }

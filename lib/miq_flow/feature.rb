@@ -43,8 +43,12 @@ module MiqFlow
 
       method       = opts.fetch(:miq_import_method, 'partial')
       provider     = opts.fetch(:provider,          'default')
-      @git_workdir = @git_repo.workdir() 
+      @git_workdir = @git_repo.workdir()
       @miq_domain  = discover_domains(provider: provider, miq_import_method: method)
+    end
+
+    def checkout
+      @git_repo.checkout(@git_branch)
     end
 
     # Deploys the feature to ManageIQ
@@ -52,7 +56,7 @@ module MiqFlow
     # least one changed file
     #
     def deploy
-      @git_repo.checkout(@git_branch)
+      checkout
       paths = get_diff_paths()
       deploy_opts = { changeset: paths, git_workdir: @git_workdir }
       # The import does not honor the priority setting in the domain => import from lowest to highest priority
