@@ -57,6 +57,8 @@ module MiqFlow
                       .select{ |p| p.include?('__methods__') }
                       .map{ |p| [p.gsub(/rb$/, 'yaml'), p.gsub(/yaml$/, 'rb')] }
                       .flatten
+                      .uniq
+                      .select{ |p| File.exist?(File.join(base_dir,p)) }
         changeset + method_data + find_parent_files(base_dir, changeset)
       end
 
