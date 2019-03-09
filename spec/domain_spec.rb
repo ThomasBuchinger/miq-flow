@@ -10,13 +10,6 @@ RSpec.describe MiqFlow::MiqDomain do
     }
     MiqFlow::MiqDomain.create_from_config('dummy', opts)
   end
-  let(:fake_file) {
-    class FakeFile
-      def exist?(p); true end
-      def read(p); p.split('/').last end
-    end
-  }
-
 
   context "_limit_changeset()" do
     it "works as expected" do
@@ -54,6 +47,5 @@ RSpec.describe MiqFlow::MiqDomain do
       expect(re[:content]).to eq('text')
       expect(re[:meta_content]).to eq('text')
     end
-    
   end
 end
