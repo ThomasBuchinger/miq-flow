@@ -4,6 +4,8 @@ AllCops:
 
 Style/GlobalVars:
   AllowedVariables: [ $logger, $settings, $git_repo, $tmpdir ]
+Style/StringLiterals:
+  Enabled: false
 Metrics/LineLength:
   Max: 120
   Exclude:
