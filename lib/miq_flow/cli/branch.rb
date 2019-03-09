@@ -27,51 +27,56 @@ module MiqFlow
         MiqFlow.tear_down()
       end
 
-      desc 'diff BRANCH', 'DEV: Show a diff between BRANCH and the current version in ManageIQ'
+      desc 'diff BRANCH', 'DEV: Show diff between BRANCH and the current version in ManageIQ'
       def diff(name)
         cli_setup(options, %i[git api])
-        data = {}
-        text = []
         api = MiqFlow::ManageIQ.new
         feature = MiqFlow::Feature.new(name, {})
-        changeset = feature.get_diff_paths()
         feature.checkout()
+        data = {}
+
+        # Get base data from MaangeIQ
         feature.miq_domain.each do |domain|
-          paths = domain._limit_changeset(changeset)
-
-          # find file data
-          file_data = paths.map{ |path| { path: path, content: File.read(File.join(feature.git_workdir, path))} }
-
-          # find API data
-          api_obj = domain.changeset_as_uri(paths)
-          api_data = api_obj.map do |o| 
-            q = api.query_automate_model(o[:class], type: :method, attributes: %i[name data])
-            q.select!{|m| m['name'] == o[:name]  }
-            if q.length != 1
-              $logger.warn("Unable to find method via API: #{o[:path]}") if q.length == 0
-              $logger.warn("Ambigiuos method name: #{o[:path]}") if q.length > 1
-              next {raw: '', path: 'not found', content: ''}
-            end
-
-            {raw: q[0], path: o[:path], content: q[0]['data']}
-          end
-
-          # group_by_path
-          data[domain.name] =  file_data.concat(api_data).group_by{|e| File.basename(e[:path]) }
-          text << data[domain.name].map do |p, d| 
-            Rugged::Patch.from_strings(
-              d.fetch(0, {})[:content],
-              d.fetch(1, {})[:content],
-              {old_path: "git/#{p}", new_path: "api/#{p}"}
-            ).to_s
+          $logger.debug("Searching AeMethods in #{domain.name}")
+          api_data = api.query_automate_model(domain.name, type: :method, attributes: %i[name data location])
+          api_data.each do |d|
+            key = d["fqname"].to_sym
+            data[key] = { 
+              api_data: d['data'],
+              location: d['location'],
+              domain: d['fqname'].split('/')[1],
+              name: d['fqname'].split('/')[-1],
+              class: d['fqname'].split('/')[-2],
+              namespace: d['fqname'].split('/')[2..-3].join('/'),
+              export_dir: domain.export_dir,
+              export_name: domain.export_name
+            }
           end
         end
-        puts data.inspect
-        puts "------"
-        puts text.flatten
+
+        # Get git data
+        patches = data.map do |key, value|
+          path = File.join(
+                   feature.git_workdir,
+                   value[:export_dir],
+                   value[:export_name],
+                   value[:namespace],
+                   "#{value[:class]}.class",
+                   '__methods__',
+                   "#{value[:name]}.rb"
+                 )
+          data[key][:file_path] = path
+          data[key][:file_data] = File.exists?(path) ? File.read(path) : ''
+
+          Rugged::Patch.from_strings(
+            value[:file_data],
+            value[:api_data],
+            {new_path: key.to_s, old_path: value[:file_path]}
+          ).to_s
+        end
+        puts patches
         MiqFlow.tear_down()
       end
-      
     end
   end
 end
