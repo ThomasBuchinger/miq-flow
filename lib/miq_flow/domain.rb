@@ -4,7 +4,7 @@ module MiqFlow
   # Represents a single ManageIQ Automate Domain on disk
   class MiqDomain
     include MiqFlow::MiqMethods
-    include MiqFlow::MiqMethods::MiqUtils
+
     # Mandatory parameters
     attr_accessor :name
     # Mandatory parameters with guessable defaults
@@ -36,15 +36,6 @@ module MiqFlow
     #
     def _limit_changeset(files)
       @changeset = files.select{ |f| f.include?("#{@export_name}#{File::SEPARATOR}") && f.include?(@export_dir) }
-    end
-
-    def changeset_as_uri(files)
-      files.dup
-           .map{ |f| f.gsub(%r(^#{@export_dir}\/#{@export_name}), name_from_branch(@name)) }
-           .map{ |f| method_to_uri(f) }
-           .map{ |f| instance_to_uri(f) }
-           .map{ |f| class_to_uri(f) }
-           .map{ |f| namespace_to_uri(f) }
     end
 
     # create a new MiqDomain Object from information on the file system
@@ -120,6 +111,23 @@ module MiqFlow
       @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
       clean_data = cleanup_import(prep_data)
       raise MiqFlow::UnknownStrategyError, "Unknown cleanup method: #{@miq_import_method}" if clean_data[:error] == true
+    end
+
+    def file_data(git_workdir:, namespace:, klass:, name:)
+      re = {}
+      re[:path] = File.join(
+        git_workdir,
+        @export_dir,
+        @export_name,
+        namespace,
+        "#{klass}.class",
+        '__methods__',
+        "#{name}.rb"
+      )
+      re[:meta_yaml]    = re[:path].gsub(/rb$/, 'yaml')
+      re[:content]      = File.exist?(re[:path]) ? File.read(re[:path]) : ''
+      re[:meta_content] = File.exist?(re[:meta_yaml]) ? File.read(re[:meta_yaml]) : ''
+      re
     end
   end
 end

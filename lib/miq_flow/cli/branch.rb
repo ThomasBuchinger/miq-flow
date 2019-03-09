@@ -33,48 +33,17 @@ module MiqFlow
         api = MiqFlow::ManageIQ.new
         feature = MiqFlow::Feature.new(name, {})
         feature.checkout()
-        data = {}
+        data = get_diff_data(feature, api)
 
-        # Get base data from MaangeIQ
-        feature.miq_domain.each do |domain|
-          $logger.debug("Searching AeMethods in #{domain.name}")
-          api_data = api.query_automate_model(domain.name, type: :method, attributes: %i[name data location])
-          api_data.each do |d|
-            key = d["fqname"].to_sym
-            data[key] = { 
-              api_data: d['data'],
-              location: d['location'],
-              domain: d['fqname'].split('/')[1],
-              name: d['fqname'].split('/')[-1],
-              class: d['fqname'].split('/')[-2],
-              namespace: d['fqname'].split('/')[2..-3].join('/'),
-              export_dir: domain.export_dir,
-              export_name: domain.export_name
-            }
-          end
-        end
-
-        # Get git data
-        patches = data.map do |key, value|
-          path = File.join(
-                   feature.git_workdir,
-                   value[:export_dir],
-                   value[:export_name],
-                   value[:namespace],
-                   "#{value[:class]}.class",
-                   '__methods__',
-                   "#{value[:name]}.rb"
-                 )
-          data[key][:file_path] = path
-          data[key][:file_data] = File.exists?(path) ? File.read(path) : ''
-
+        # get patches
+        text = data.map do |key, value|
           Rugged::Patch.from_strings(
-            value[:file_data],
-            value[:api_data],
-            {new_path: key.to_s, old_path: value[:file_path]}
+            value[:content],
+            value[:data],
+            new_path: key.to_s, old_path: value[:path]
           ).to_s
         end
-        puts patches
+        puts text
         MiqFlow.tear_down()
       end
     end
