@@ -35,5 +35,25 @@ module MiqFlow
       end
       data
     end
+
+    def show_feature_long(feat)
+      details = feat.details()
+      text = []
+      text << "Feature: #{details[:name]} on branch #{details[:branch_name]}"
+      text << " Branch: #{details[:brnach_sha]} #{details[:branch_message]}"
+      text << "   Base: #{details[:base_sha]} #{details[:base_message]}"
+      text << ""
+      details[:domain].each do |dom|
+        text << dom[:name]
+        text.concat(dom[:paths].map{ |p| "  #{p}" })
+      end
+      text.join("\n")
+    end
+
+    def show_feature_short(feat)
+      details = feat.details()
+      dom_list = details[:domain].map{ |dom| "#{dom[:name]}: #{dom[:paths].length}" }.join(" ")
+      "#{details[:branch_name]}: #{dom_list}"
+    end
   end
 end

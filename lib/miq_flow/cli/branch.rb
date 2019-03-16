@@ -12,7 +12,7 @@ module MiqFlow
       def list
         cli_setup(options, %i[git])
         branches = MiqFlow::GitMethods.get_remote_branches()
-        text = branches.map{ |b| MiqFlow::Feature.new(b.name, {}).show_summary() }
+        text = branches.map{ |b| show_feature_short(MiqFlow::Feature.new(b.name, {})) }
         puts text
         MiqFlow.tear_down()
       end
@@ -22,7 +22,7 @@ module MiqFlow
       def inspect(name)
         cli_setup(options, %i[git])
         feature = MiqFlow::Feature.new(name, {})
-        text = options[:short] ? feature.show_summary() : feature.show_details()
+        text = options[:short] ? show_feature_short(feature) : show_feature_long(feature)
         puts text
         MiqFlow.tear_down()
       end

@@ -129,5 +129,13 @@ module MiqFlow
       re[:meta_content] = File.exist?(re[:meta_yaml]) ? File.read(re[:meta_yaml]) : ''
       re
     end
+
+    def details(paths)
+      {
+        name: @name,
+        export_name: @export_name,
+        paths: _limit_changeset(paths)
+      }
+    end
   end
 end

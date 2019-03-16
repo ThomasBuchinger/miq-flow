@@ -81,26 +81,17 @@ module MiqFlow
       domains.map{ |dom| MiqFlow::MiqDomain.create_from_file(dom.merge(feature_level_params)) }
     end
 
-    def show_details
-      commit = @git_base
-      paths  = get_diff_paths()
-      ret = []
-      ret << "Feature: #{@name} on branch #{@git_branch.name} "
-      ret << " Branch: #{@git_branch.target.tree_id}: #{@git_branch.target.summary}"
-      ret << "   Base: #{commit.tree_id}: #{commit.summary}"
-      ret << ''
-      @miq_domain.each do |dom|
-        ret << dom.name
-        dom._limit_changeset(paths).each{ |path| ret << "  #{path}" }
-      end
-      ret.join("\n")
-    end
-
-    def show_summary
+    def details
       paths = get_diff_paths()
-      domain_info   = @miq_domain.map{ |dom| { name: dom.name, change_num: dom._limit_changeset(paths).length } }
-      domain_string = domain_info.map{ |d| "#{d[:name]}: #{d[:change_num]}" }.join(' ')
-      "#{@git_branch.name}: #{domain_string}"
+      {
+        name: @name,
+        branch_name: @git_branch.name,
+        base_sha: @git_base.tree_id,
+        base_message: @git_base.summary,
+        branch_sha: @git_branch.target.tree_id,
+        branch_message: @git_branch.target.summary,
+        domain: @miq_domain.map{ |dom| dom.details(paths) }
+      }
     end
   end
 end
