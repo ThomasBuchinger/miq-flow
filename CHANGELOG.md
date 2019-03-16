@@ -5,6 +5,7 @@
 - Add user guide (#39)
 - Print error stack trace in verbose mode (#46)
 - Add PR template (#49)
+- Add branch diff command (preview) (#51)
 
 ### Fixed
 - Updated outdated information in  README (#39)
