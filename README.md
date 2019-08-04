@@ -34,6 +34,7 @@ For additional instructions see the full [installation guide](doc/user_guide.md)
 See `miq-flow help` for details. Basic Commands are: 
 * branch list - lists a summary for each branch in git
 * branch inspect _BRANCH_ - show details of a given branch
+* branch diff _BRANCH_ - (preview) show changes in ManageIQ
 * domain list - lists Automate Domains found in ManageIQ
 * deploy _BRANCH_ - deploys the code in a feature-branch
 

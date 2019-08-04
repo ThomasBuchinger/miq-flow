@@ -10,6 +10,7 @@ module MiqFlow
       klass_type = get_api_type(type)
       raise MiqFlow::ApiError, "Unknown Type: #{type}, while quering automate model" if klass_type.nil?
 
+      path = path.start_with?('/') ? path[1..-1] : path
       response = invoke_miq_api("/automate/#{path}?depth=#{depth}#{get_attributes_param(attributes)}")
       select_for_type(response, type)
     end

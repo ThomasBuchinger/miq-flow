@@ -13,7 +13,7 @@ module MiqFlow
 
     attr_accessor :git_branch, :git_master
     attr_accessor :miq_domain
-    attr_reader   :git_repo
+    attr_reader   :git_repo, :git_workdir
 
     # Sets up a bunch of instance variables
     #
@@ -41,9 +41,14 @@ module MiqFlow
 
       _create_git(branch_name, @git_repo)
 
-      method   = opts.fetch(:miq_import_method, 'partial')
-      provider = opts.fetch(:provider,          'default')
-      @miq_domain = discover_domains(provider: provider, miq_import_method: method)
+      method       = opts.fetch(:miq_import_method, 'partial')
+      provider     = opts.fetch(:provider,          'default')
+      @git_workdir = @git_repo.workdir()
+      @miq_domain  = discover_domains(provider: provider, miq_import_method: method)
+    end
+
+    def checkout
+      @git_repo.checkout(@git_branch)
     end
 
     # Deploys the feature to ManageIQ
@@ -51,9 +56,9 @@ module MiqFlow
     # least one changed file
     #
     def deploy
-      @git_repo.checkout(@git_branch)
+      checkout
       paths = get_diff_paths()
-      deploy_opts = { changeset: paths, git_workdir: @git_repo.workdir }
+      deploy_opts = { changeset: paths, git_workdir: @git_workdir }
       # The import does not honor the priority setting in the domain => import from lowest to highest priority
       @miq_domain.sort!{ |dom1, dom2| dom1.miq_priority <=> dom2.miq_priority }
       @miq_domain.each do |domain|
@@ -76,26 +81,17 @@ module MiqFlow
       domains.map{ |dom| MiqFlow::MiqDomain.create_from_file(dom.merge(feature_level_params)) }
     end
 
-    def show_details
-      commit = @git_base
-      paths  = get_diff_paths()
-      ret = []
-      ret << "Feature: #{@name} on branch #{@git_branch.name} "
-      ret << " Branch: #{@git_branch.target.tree_id}: #{@git_branch.target.summary}"
-      ret << "   Base: #{commit.tree_id}: #{commit.summary}"
-      ret << ''
-      @miq_domain.each do |dom|
-        ret << dom.name
-        dom._limit_changeset(paths).each{ |path| ret << "  #{path}" }
-      end
-      ret.join("\n")
-    end
-
-    def show_summary
+    def details
       paths = get_diff_paths()
-      domain_info   = @miq_domain.map{ |dom| { name: dom.name, change_num: dom._limit_changeset(paths).length } }
-      domain_string = domain_info.map{ |d| "#{d[:name]}: #{d[:change_num]}" }.join(' ')
-      "#{@git_branch.name}: #{domain_string}"
+      {
+        name: @name,
+        branch_name: @git_branch.name,
+        base_sha: @git_base.tree_id,
+        base_message: @git_base.summary,
+        branch_sha: @git_branch.target.tree_id,
+        branch_message: @git_branch.target.summary,
+        domain: @miq_domain.map{ |dom| dom.details(paths) }
+      }
     end
   end
 end

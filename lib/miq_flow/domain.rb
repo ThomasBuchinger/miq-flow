@@ -4,6 +4,7 @@ module MiqFlow
   # Represents a single ManageIQ Automate Domain on disk
   class MiqDomain
     include MiqFlow::MiqMethods
+
     # Mandatory parameters
     attr_accessor :name
     # Mandatory parameters with guessable defaults
@@ -110,6 +111,31 @@ module MiqFlow
       @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
       clean_data = cleanup_import(prep_data)
       raise MiqFlow::UnknownStrategyError, "Unknown cleanup method: #{@miq_import_method}" if clean_data[:error] == true
+    end
+
+    def file_data(git_workdir:, namespace:, klass:, name:)
+      re = {}
+      re[:path] = File.join(
+        git_workdir,
+        @export_dir,
+        @export_name,
+        namespace,
+        "#{klass}.class",
+        '__methods__',
+        "#{name}.rb"
+      )
+      re[:meta_yaml]    = re[:path].gsub(/rb$/, 'yaml')
+      re[:content]      = File.exist?(re[:path]) ? File.read(re[:path]) : ''
+      re[:meta_content] = File.exist?(re[:meta_yaml]) ? File.read(re[:meta_yaml]) : ''
+      re
+    end
+
+    def details(paths)
+      {
+        name: @name,
+        export_name: @export_name,
+        paths: _limit_changeset(paths)
+      }
     end
   end
 end
