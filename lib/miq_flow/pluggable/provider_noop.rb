@@ -10,10 +10,10 @@ module MiqFlow
         @fail = opts.fetch(:flag_fail, false)
       end
 
-      def import(tmpdir, fs_domain, miq_domain)
+      def import(miq_domain, opts)
         raise MiqFlow::ProviderError, 'This provider cannot fail' if @fail
 
-        $logger.info("Importing with NOOP provider MIQ_DOMAIN=#{miq_domain} TMPDIR=#{tmpdir} FS_DOMAIN=#{fs_domain}")
+        $logger.info("Importing with NOOP provider MIQ_DOMAIN=#{miq_domain} options=#{opts}")
       end
     end
   end

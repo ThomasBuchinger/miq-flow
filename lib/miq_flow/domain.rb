@@ -24,10 +24,8 @@ module MiqFlow
     # @option opts [String] :miq_priority DOES NOTHING, since the importer does not honor it
     # @option opts [String] :branch_name name of the git branch. INFO only
     def _set_defaults(opts={})
-      @miq_provider_name = opts.fetch(:miq_provider,      'noop')
       @export_dir        = opts.fetch(:export_dir,        'automate')
       @export_name       = opts.fetch(:export_name,       @name)
-      @miq_import_method = opts.fetch(:miq_import_method, :partial)
       @miq_priority      = opts.fetch(:miq_priority,      10)
       @branch_name       = opts.fetch(:branch_name,       'No Branch')
     end
@@ -72,10 +70,21 @@ module MiqFlow
       @name = name
       _set_defaults(opts)
 
-      @miq_provider = MiqFlow::MiqProvider::Noop.new      if opts[:provider_name] == 'noop'
-      @miq_provider = MiqFlow::MiqProvider::Appliance.new if opts[:provider_name] == 'local'
-      @miq_provider = MiqFlow::MiqProvider::Docker.new    if opts[:provider_name] == 'docker'
-      @miq_provider = MiqFlow::MiqProvider::Noop.new      if @miq_provider.nil?
+      @miq_import_method, @miq_provider = provider_from_name(opts[:provider_name])
+    end
+
+    def provider_from_name(name)
+      return [:partial, MiqFlow::MiqProvider::Noop.new]      if name == 'noop'
+
+      return [:git, MiqFlow::MiqProvider::Noop.new]          if name == 'noop-api'
+      
+      return [:partial, MiqFlow::MiqProvider::Appliance.new] if name == 'local'
+      
+      return [:partial, MiqFlow::MiqProvider::Docker.new]    if name == 'docker'
+
+      return [:git, MiqFlow::MiqProvider::Api.new]           if name == 'api'
+
+      [:partial, MiqFlow::MiqProvider::Noop.new]
     end
 
     def prepare_import(domain_data, feature_data)
@@ -91,7 +100,7 @@ module MiqFlow
     end
 
     def skip_deploy?(opts)
-      skippable_method = [:partial].include?(@miq_import_method)
+      skippable_method = [:partial, :git].include?(@miq_import_method)
       skip = skippable_method && opts[:changeset].empty?()
       $logger.info("Skipping Domain: #{@name}: empty") if skip
       skip
@@ -108,7 +117,8 @@ module MiqFlow
       prep_data = prepare_import(self, opts)
       raise MiqFlow::UnknownStrategyError, "Unknown Import method: #{@miq_import_method}" if prep_data[:error] == true
 
-      @miq_provider.import(File.join(prep_data[:import_dir], @export_dir), @export_name, @name)
+      prep_data.merge!(import_dir: File.join(prep_data[:import_dir], @export_dir), fs_name: @export_name)
+      @miq_provider.import(@name, prep_data)
       clean_data = cleanup_import(prep_data)
       raise MiqFlow::UnknownStrategyError, "Unknown cleanup method: #{@miq_import_method}" if clean_data[:error] == true
     end

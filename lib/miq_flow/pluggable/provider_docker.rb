@@ -12,7 +12,9 @@ module MiqFlow
         @container_name = container_name
       end
 
-      def import(tmpdir, fs_domain, miq_domain)
+      def import(miq_domain, opts)
+        tmpdir    = opts[:import_dir]
+        fs_domain = opts[:fs_domain]
         $logger.debug("TMPDIR=#{tmpdir}")
         commands = [
           "docker exec #{@container_name} mkdir -p #{tmpdir}",
