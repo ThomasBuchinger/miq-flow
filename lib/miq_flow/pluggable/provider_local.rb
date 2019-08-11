@@ -11,8 +11,10 @@ module MiqFlow
         true
       end
 
-      def import(tmpdir, fs_domain, miq_domain)
-        commands = [
+      def import(miq_domain, opts)
+        tmpdir    = opts[:import_dir]
+        fs_domain = opts[:fs_domain]
+        commands  = [
           'rake -f /var/www/miq/vmdb/Rakefile evm:automate:import'\
           " DOMAIN=#{fs_domain} IMPORT_AS=#{miq_domain} IMPORT_DIR=#{tmpdir} OVERWRITE=true PREVIEW=false ENABLED=true"
         ]

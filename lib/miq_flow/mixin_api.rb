@@ -55,5 +55,25 @@ module MiqFlow
     rescue SocketError => e
       raise MiqFlow::ConnectionError, "Unable to connect ot ManageIQ: #{e.message}", []
     end
+
+    def miq_action_api(action_id, path, method: :post, resource: {})
+      req_opts = { method: method, user: @user, password: @password, verify_ssl: false }
+      req_opts[:url] = @url + path
+      req_opts[:payload] = JSON.generate(action: action_id, resource: resource)
+
+      $logger.debug("API #{method} Action: #{req_opts[:url]}")
+      $logger.debug("  Payload: #{req_opts[:payload]}") unless resource.empty?
+
+      response = RestClient::Request.execute(req_opts)
+      JSON.parse(response.body)
+    rescue RestClient::Exceptions::Timeout => e
+      raise MiqFlow::ConnectionError, "Unable to connect to ManageIQ: #{e.message}", []
+    rescue RestClient::Exception => e
+      raise MiqFlow::BadResponseError, "Invalid API call: #{e.message}", []
+    rescue Errno::ECONNREFUSED => e
+      raise MiqFlow::ConnectionError, "ManageIQ API unavailalbe: #{e.message}", []
+    rescue SocketError => e
+      raise MiqFlow::ConnectionError, "Unable to connect ot ManageIQ: #{e.message}", []
+    end
   end
 end
