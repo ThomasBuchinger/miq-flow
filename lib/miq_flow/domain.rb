@@ -77,9 +77,9 @@ module MiqFlow
       return [:partial, MiqFlow::MiqProvider::Noop.new]      if name == 'noop'
 
       return [:git, MiqFlow::MiqProvider::Noop.new]          if name == 'noop-api'
-      
+
       return [:partial, MiqFlow::MiqProvider::Appliance.new] if name == 'local'
-      
+
       return [:partial, MiqFlow::MiqProvider::Docker.new]    if name == 'docker'
 
       return [:git, MiqFlow::MiqProvider::Api.new]           if name == 'api'
@@ -100,7 +100,7 @@ module MiqFlow
     end
 
     def skip_deploy?(opts)
-      skippable_method = [:partial, :git].include?(@miq_import_method)
+      skippable_method = %i[partial git].include?(@miq_import_method)
       skip = skippable_method && opts[:changeset].empty?()
       $logger.info("Skipping Domain: #{@name}: empty") if skip
       skip
